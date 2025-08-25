@@ -466,100 +466,101 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach the selected model so backend can pick the right LLM
     formData.append('model', selectedModel);
 
+    const imageDataUrl = attachedFile ? document.getElementById('image-preview').src : null;
+
+    if (attachedFile) {
+        formData.append('image', attachedFile);
+    }
+
+    // Clear the user's input area immediately
+    chatInput.value = "";
+    chatInput.style.height = 'auto';
+    if (attachedFile) {
+      attachedFile = null;
+      fileInput.value = '';
+      imagePreviewContainer.style.display = 'none';
+    }
+
+    // Create the bot's "thinking" bubble
+    const botBubble = document.createElement("div");
+    botBubble.className = "chat-bubble bot align-self-start text-light";
+    botBubble.innerHTML = '<span class="typing-dots">...</span>';
+    box.appendChild(botBubble);
+    box.scrollTop = box.scrollHeight;
+
+    // --- This is the single, corrected API call block ---
     try {
-        let fullResponse = "";
-
-        if (attachedFile) {
-            // --- IF IMAGE -> Call the Vision API ---
-            formData.append('image', attachedFile);
-            
-            const res = await fetch(`${VISION_API_URL}/describe_image`, {
-                method: 'POST',
-                body: formData
-            });
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            
-            const data = await res.json();
-            fullResponse = data.content || `[Error: ${data.error}]`;
-
-        } else {
-            // --- IF NO IMAGE -> Call the Text & Research API ---
-            const res = await fetch(`${TEXT_API_URL}/completion`, {
-                method: 'POST',
-                body: formData
-            });
-            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-            const data = await res.json();
-            fullResponse = data.content || `[Error: ${data.error}]`;
-        }
-
-            } catch (error) {
-                console.error("Error occurred while fetching:", error);
-            }
-
-    try {
-
-        const controller = new AbortController();
-        currentAbortController = controller;
+        currentAbortController = new AbortController();
         streamAborted = false;
         isStreaming = true;
-        stopBtn.style.display = 'inline-block';
-        if (sendBtn) sendBtn.disabled = true;
+        stopBtn.classList.remove('d-none');
+        sendBtn.disabled = true;
 
-        const res = await fetch(`${TEXT_API_URL}/completion`, { method: 'POST', body: formData, signal: controller.signal });
-        if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
         let fullResponse = "";
-        botBubble.innerHTML = "";
-        let aborted = false;
+        let targetUrl = attachedFile ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
 
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-            if (streamAborted) { aborted = true; break; }
+        const res = await fetch(targetUrl, {
+            method: 'POST',
+            body: formData,
+            signal: currentAbortController.signal
+        });
 
-            const chunk = decoder.decode(value);
-            // Server-Sent Events might send multiple data chunks at once
-            const lines = chunk.split('\n\n');
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
 
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    try {
-                        const jsonStr = line.substring(6);
-                        if (jsonStr) {
-                            const data = JSON.parse(jsonStr);
-                            const token = data.content;
-                            fullResponse += token;
-                            
-                            // Use renderFormattedResponse to handle potential Markdown in the full stream
-                            renderFormattedResponse(botBubble, fullResponse + "▌"); // Add a cursor during streaming
-                            box.scrollTop = box.scrollHeight;
+        if (attachedFile) {
+            // --- Handle single JSON response from Vision API ---
+            const data = await res.json();
+            fullResponse = data.content || `[Error: ${data.error}]`;
+            renderFormattedResponse(botBubble, fullResponse); // Render immediately
+        } else {
+            // --- Handle streaming response from Text API ---
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            botBubble.innerHTML = ""; // Clear "..."
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done || streamAborted) break;
+
+                const chunk = decoder.decode(value, { stream: true });
+                const lines = chunk.split('\n\n');
+
+                for (const line of lines) {
+                    if (line.startsWith('data: ')) {
+                        try {
+                            const jsonStr = line.substring(6);
+                            if (jsonStr) {
+                                const data = JSON.parse(jsonStr);
+                                fullResponse += data.content;
+                                renderFormattedResponse(botBubble, fullResponse + "▌");
+                                box.scrollTop = box.scrollHeight;
+                            }
+                        } catch (e) {
+                            console.error("Failed to parse JSON chunk:", line);
                         }
-                    } catch (e) {
-                        console.error("Failed to parse JSON chunk:", line);
                     }
                 }
             }
+            renderFormattedResponse(botBubble, fullResponse); // Final render without cursor
         }
-
-        // Final render without the cursor
-        renderFormattedResponse(botBubble, fullResponse);
+        
         box.scrollTop = box.scrollHeight;
 
         // only save assistant reply if the stream was not aborted
         if (!streamAborted) {
-          conversationHistory.push({ role: 'assistant', content: fullResponse });
+            conversationHistory.push({ role: 'assistant', content: fullResponse });
         }
 
-        // Save the full response to Firebase
-        if (firebase.auth().currentUser) {
+        // --- Save to Firebase ---
+        if (firebase.auth().currentUser && !streamAborted) {
             const db = firebase.firestore();
             const user = firebase.auth().currentUser;
-            const userMessage = {
+            const userMessageForDb = {
                 role: 'user',
                 content: userInput,
+                imageUrl: imageDataUrl,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
             const botMessage = {
@@ -569,42 +570,38 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (currentSessionId === null) {
-                // This is the first message of a new session
                 const newChatRef = await db.collection("chats").add({
                     uid: user.uid,
-                    title: userInput.substring(0, 40), // Use first 40 chars of prompt as title
+                    title: userInput.substring(0, 40) || "Image Chat",
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 currentSessionId = newChatRef.id;
-                // Save the first two messages
-                await newChatRef.collection("messages").add(userMessage);
-                if (!streamAborted) await newChatRef.collection("messages").add(botMessage);
-                loadSidebarHistory(); // Reload sidebar to show the new chat
+                await newChatRef.collection("messages").add(userMessageForDb);
+                await newChatRef.collection("messages").add(botMessage);
+                loadSidebarHistory();
             } else {
-                // This is an existing session, just add the new messages
                 const chatRef = db.collection("chats").doc(currentSessionId);
-                await chatRef.collection("messages").add(userMessage);
-                if (!streamAborted) await chatRef.collection("messages").add(botMessage);
+                await chatRef.collection("messages").add(userMessageForDb);
+                await chatRef.collection("messages").add(botMessage);
             }
         }
+
     } catch (error) {
-      // Handle abort separately so user sees a clear message
-      if (error.name === 'AbortError') {
-        streamAborted = true;
-        botBubble.textContent = "⏹ Generation stopped.";
-      } else {
-        botBubble.textContent = "⚠️ Error: " + error.message;
-        console.error("API Error:", error);
-      }
-    }
-    finally {
-      // cleanup streaming state
-      isStreaming = false;
-      if (stopBtn) stopBtn.style.display = 'none';
-      if (sendBtn) sendBtn.disabled = false;
-      currentAbortController = null;
+        if (error.name === 'AbortError') {
+            botBubble.textContent = "⏹ Generation stopped.";
+        } else {
+            botBubble.textContent = "⚠️ Error: " + error.message;
+            console.error("API Error:", error);
+        }
+    } finally {
+        isStreaming = false;
+        streamAborted = false;
+        currentAbortController = null;
+        stopBtn.classList.add('d-none');
+        sendBtn.disabled = false;
     }
   });
+
 
   // Stop button: abort the current streaming request
   if (stopBtn) {
@@ -711,5 +708,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
-
-
