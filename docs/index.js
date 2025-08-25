@@ -469,6 +469,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach the selected model so backend can pick the right LLM
     formData.append('model', selectedModel);
 
+    const usedVision = !!attachedFile;
+
     if (attachedFile) {
         formData.append('image', attachedFile);
     }
@@ -496,7 +498,8 @@ document.addEventListener('DOMContentLoaded', () => {
         stopBtn.style.display = 'inline-block';
         if (sendBtn) sendBtn.disabled = true;
 
-        const targetBase = (attachedFile ? VISION_API_BASE : TEXT_API_BASE) || TEXT_API_BASE;
+        // use the preserved flag (usedVision) instead of attachedFile which was cleared
+        const targetBase = usedVision ? VISION_API_BASE : TEXT_API_BASE;
 
         const res = await fetch(`${targetBase}/completion`, { method: 'POST', body: formData, signal: controller.signal });
         if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
