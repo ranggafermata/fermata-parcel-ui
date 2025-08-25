@@ -466,10 +466,9 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('history', JSON.stringify(conversationHistory.slice(0, -1))); // Send history *before* the current prompt
 
     // Attach the selected model so backend can pick the right LLM
-    formData.append('model_choice', localStorage.getItem('selectedModel') || 'effort');
+    formData.append('model', selectedModel);
 
-    const imageToSend = attachedFile;
-    const imageDataUrl = imageToSend ? document.getElementById('image-preview').src : null;
+    const imageToSend = attachedFile; // Store the file before we clear it
     if (imageToSend) {
         formData.append('image', imageToSend);
     }
@@ -488,15 +487,18 @@ document.addEventListener('DOMContentLoaded', () => {
     box.appendChild(botBubble);
     box.scrollTop = box.scrollHeight;
 
-    let fullResponse = "";
     try {
-        currentAbortController = new AbortController();
-        stopBtn.classList.remove('d-none');
-        sendBtn.disabled = true;
 
-            // The router logic: choose the URL based on whether an image exists
-        const targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
-            
+        const controller = new AbortController();
+        currentAbortController = controller;
+        streamAborted = false;
+        isStreaming = true;
+        stopBtn.style.display = 'inline-block';
+        if (sendBtn) sendBtn.disabled = true;
+
+        let fullResponse = "";
+        let targetUrl = imageToSend ? `${VISION_API_BASE}/describe_image` : `${TEXT_API_BASE}/completion`;
+
         const res = await fetch(targetUrl, {
             method: 'POST',
             body: formData,
@@ -506,27 +508,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
 
         if (imageToSend) {
-                // --- Handle single JSON response from Vision API ---
+            // --- Handle single JSON response from Vision API ---
             const data = await res.json();
             fullResponse = data.content || `[Error: ${data.error}]`;
             renderFormattedResponse(botBubble, fullResponse);
         } else {
-                // --- Handle streaming response from Text API ---
+            // --- Handle streaming response from Text API ---
             const reader = res.body.getReader();
             const decoder = new TextDecoder();
             botBubble.innerHTML = "";
-            let streamAborted = false;
-
             while (true) {
                 const { done, value } = await reader.read();
-                if (done || currentAbortController.signal.aborted) {
-                    if (currentAbortController.signal.aborted) streamAborted = true;
-                    break;
-            }if (streamAborted) {
-                    renderFormattedResponse(botBubble, fullResponse + " [Stopped]");
-            } else {
-                    renderFormattedResponse(botBubble, fullResponse);
-          }if (streamAborted) { aborted = true; break; }
+                if (done) break;
+            if (streamAborted) { aborted = true; break; }
 
             const chunk = decoder.decode(value);
             // Server-Sent Events might send multiple data chunks at once
@@ -553,10 +547,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }}
         
         // Final render without the cursor
+        renderFormattedResponse(botBubble, fullResponse);
         box.scrollTop = box.scrollHeight;
 
-        if (!currentAbortController.signal.aborted) {
-            conversationHistory.push({ role: 'assistant', content: fullResponse });
+        // only save assistant reply if the stream was not aborted
+        if (!streamAborted) {
+          conversationHistory.push({ role: 'assistant', content: fullResponse });
         }
 
         // Save the full response to Firebase
@@ -604,10 +600,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     finally {
-          currentAbortController = null;
-          stopBtn.classList.add('d-none');
-          sendBtn.disabled = false;
-        }
+      // cleanup streaming state
+      isStreaming = false;
+      if (stopBtn) stopBtn.style.display = 'none';
+      if (sendBtn) sendBtn.disabled = false;
+      currentAbortController = null;
+    }
   });
 
   // Stop button: abort the current streaming request
