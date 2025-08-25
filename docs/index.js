@@ -466,23 +466,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach the selected model so backend can pick the right LLM
     formData.append('model', selectedModel);
 
-    if (attachedFile) {
-        formData.append('image', attachedFile);
-    }
+    try {
+        let fullResponse = "";
 
-    chatInput.value = "";
-    chatInput.style.height = 'auto';
-    if (attachedFile) {
-      attachedFile = null;
-      fileInput.value = '';
-      imagePreviewContainer.style.display = 'none';
-    }
+        if (attachedFile) {
+            // --- IF IMAGE -> Call the Vision API ---
+            formData.append('image', attachedFile);
+            
+            const res = await fetch(`${VISION_API_URL}/describe_image`, {
+                method: 'POST',
+                body: formData
+            });
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            
+            const data = await res.json();
+            fullResponse = data.content || `[Error: ${data.error}]`;
 
-    const botBubble = document.createElement("div");
-    botBubble.className = "chat-bubble bot align-self-start text-light";
-    botBubble.innerHTML = '<span class="typing-dots">...</span>';
-    box.appendChild(botBubble);
-    box.scrollTop = box.scrollHeight;
+        } else {
+            // --- IF NO IMAGE -> Call the Text & Research API ---
+            const res = await fetch(`${TEXT_API_URL}/completion`, {
+                method: 'POST',
+                body: formData
+            });
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
 
     try {
 
@@ -493,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
         stopBtn.style.display = 'inline-block';
         if (sendBtn) sendBtn.disabled = true;
 
-        const res = await fetch(`${API_BASE_URL}/completion`, { method: 'POST', body: formData, signal: controller.signal });
+        const res = await fetch(`${TEXT_API_URL}/completion`, { method: 'POST', body: formData, signal: controller.signal });
         if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
 
         const reader = res.body.getReader();
@@ -695,5 +701,6 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     changeLanguage('en');
   }
+
 
 });
