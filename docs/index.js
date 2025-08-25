@@ -469,15 +469,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attach the selected model so backend can pick the right LLM
     formData.append('model', selectedModel);
 
-    const usedVision = !!attachedFile;
-
-    if (usedVision) {
-        formData.append('image', usedVision);
+    const imageToSend = attachedFile; // Store the file before we clear it
+    if (imageToSend) {
+        formData.append('image', imageToSend);
     }
 
     chatInput.value = "";
     chatInput.style.height = 'auto';
-    if (usedVision) {
+    if (imageToSend) {
       attachedFile = null;
       fileInput.value = '';
       imagePreviewContainer.style.display = 'none';
