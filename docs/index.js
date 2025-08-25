@@ -471,13 +471,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const usedVision = !!attachedFile;
 
-    if (attachedFile) {
-        formData.append('image', attachedFile);
+    if (usedVision) {
+        formData.append('image', usedVision);
     }
 
     chatInput.value = "";
     chatInput.style.height = 'auto';
-    if (attachedFile) {
+    if (usedVision) {
       attachedFile = null;
       fileInput.value = '';
       imagePreviewContainer.style.display = 'none';
@@ -498,21 +498,30 @@ document.addEventListener('DOMContentLoaded', () => {
         stopBtn.style.display = 'inline-block';
         if (sendBtn) sendBtn.disabled = true;
 
-        // use the preserved flag (usedVision) instead of attachedFile which was cleared
-        const targetBase = usedVision ? VISION_API_BASE : TEXT_API_BASE;
+        let fullResponse = "";
+        let targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
 
-        const res = await fetch(`${targetBase}/completion`, { method: 'POST', body: formData, signal: controller.signal });
+        const res = await fetch(targetUrl, {
+            method: 'POST',
+            body: formData,
+            signal: currentAbortController.signal
+        });
+
         if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let fullResponse = "";
-        botBubble.innerHTML = "";
-        let aborted = false;
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
+        if (imageToSend) {
+            // --- Handle single JSON response from Vision API ---
+            const data = await res.json();
+            fullResponse = data.content || `[Error: ${data.error}]`;
+            renderFormattedResponse(botBubble, fullResponse);
+        } else {
+            // --- Handle streaming response from Text API ---
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+            botBubble.innerHTML = "";
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
             if (streamAborted) { aborted = true; break; }
 
             const chunk = decoder.decode(value);
@@ -538,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-
+        }
         // Final render without the cursor
         renderFormattedResponse(botBubble, fullResponse);
         box.scrollTop = box.scrollHeight;
