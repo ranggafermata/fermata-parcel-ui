@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     extractButton.disabled = true;
 
     try {
-      const res = await fetch(`${TEXT_API_BASE}/research`, {
+      const res = await fetch(`${TEXT_API_URL}/research`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ task, query })
