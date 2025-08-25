@@ -474,14 +474,6 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('image', imageToSend);
     }
 
-    chatInput.value = "";
-    chatInput.style.height = 'auto';
-    if (imageToSend) {
-      attachedFile = null;
-      fileInput.value = '';
-      imagePreviewContainer.style.display = 'none';
-    }
-
     const botBubble = document.createElement("div");
     botBubble.className = "chat-bubble bot align-self-start text-light";
     botBubble.innerHTML = '<span class="typing-dots">...</span>';
@@ -498,7 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sendBtn) sendBtn.disabled = true;
 
         let fullResponse = "";
-        let targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
+        let targetUrl = imageToSend ? `${VISION_API_BASE}/describe_image` : `${TEXT_API_BASE}/completion`;
 
         const res = await fetch(targetUrl, {
             method: 'POST',
