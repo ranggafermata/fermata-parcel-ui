@@ -489,6 +489,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const data = await res.json();
+            fullResponse = data.content || `[Error: ${data.error}]`;
+          }
 
     try {
 
@@ -704,3 +707,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
+
