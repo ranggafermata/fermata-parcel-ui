@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let isStreaming = false;
   let streamAborted = false;
 
+  const TEXT_API_BASE = (typeof TEXT_API_URL !== 'undefined') ? TEXT_API_URL : (window.TEXT_API_URL || '');
+  const VISION_API_BASE = (typeof VISION_API_URL !== 'undefined') ? VISION_API_URL : (window.VISION_API_URL || '');
+
   // Selected model (default = Effort 1)
   let selectedModel = localStorage.getItem('selectedModel') || 'effort';
   // expose small helper to show selection in UI (badge updated shortly)
@@ -71,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     extractButton.disabled = true;
 
     try {
-      const res = await fetch(`${TEXT_API_URL}/research`, {
+      const res = await fetch(`${TEXT_API_BASE}/research`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ task, query })
@@ -495,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sendBtn) sendBtn.disabled = true;
 
         let fullResponse = "";
-        let targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
+        let targetUrl = imageToSend ? `${VISION_API_BASE}/describe_image` : `${TEXT_API_BASE}/completion`;
 
         const res = await fetch(targetUrl, {
             method: 'POST',
