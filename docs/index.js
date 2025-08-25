@@ -22,9 +22,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let isStreaming = false;
   let streamAborted = false;
 
-  const TEXT_API_BASE = (typeof TEXT_API_URL !== 'undefined') ? TEXT_API_URL : (window.TEXT_API_URL || '');
-  const VISION_API_BASE = (typeof VISION_API_URL !== 'undefined') ? VISION_API_URL : (window.VISION_API_URL || '');
-
   // Selected model (default = Effort 1)
   let selectedModel = localStorage.getItem('selectedModel') || 'effort';
   // expose small helper to show selection in UI (badge updated shortly)
@@ -74,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     extractButton.disabled = true;
 
     try {
-      const res = await fetch(`${TEXT_API_BASE}/research`, {
+      const res = await fetch(`${API_BASE_URL}/research`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ task, query })
@@ -474,6 +471,14 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('image', imageToSend);
     }
 
+    chatInput.value = "";
+    chatInput.style.height = 'auto';
+    if (attachedFile) {
+      attachedFile = null;
+      fileInput.value = '';
+      imagePreviewContainer.style.display = 'none';
+    }
+
     const botBubble = document.createElement("div");
     botBubble.className = "chat-bubble bot align-self-start text-light";
     botBubble.innerHTML = '<span class="typing-dots">...</span>';
@@ -490,7 +495,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sendBtn) sendBtn.disabled = true;
 
         let fullResponse = "";
-        let targetUrl = imageToSend ? `${VISION_API_BASE}/describe_image` : `${TEXT_API_BASE}/completion`;
+        let targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
 
         const res = await fetch(targetUrl, {
             method: 'POST',
@@ -537,8 +542,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             }
-        }
-        }
+        }}
+        
         // Final render without the cursor
         renderFormattedResponse(botBubble, fullResponse);
         box.scrollTop = box.scrollHeight;
