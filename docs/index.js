@@ -491,7 +491,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             fullResponse = data.content || `[Error: ${data.error}]`;
-          }
+        }
+
+            } catch (error) {
+                console.error("Error occurred while fetching:", error);
+            }
 
     try {
 
@@ -707,4 +711,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 });
+
 
