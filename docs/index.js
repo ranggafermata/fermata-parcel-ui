@@ -22,6 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
   let isStreaming = false;
   let streamAborted = false;
 
+  const TEXT_API_BASE = (typeof TEXT_API_URL !== 'undefined') ? TEXT_API_URL : (window.TEXT_API_URL || '');
+  const VISION_API_BASE = (typeof VISION_API_URL !== 'undefined') ? VISION_API_URL : (window.VISION_API_URL || '');
+
   // Selected model (default = Effort 1)
   let selectedModel = localStorage.getItem('selectedModel') || 'effort';
   // expose small helper to show selection in UI (badge updated shortly)
@@ -71,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
     extractButton.disabled = true;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/research`, {
+      const res = await fetch(`${TEXT_API_BASE}/research`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ task, query })
@@ -416,17 +419,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const userInput = chatInput.value.trim();
     if (!userInput && !attachedFile) return;
 
+    // --- Smart History Management (now in the frontend!) ---
+    const MAX_TURNS = 4; // A turn is a user message and a bot response
+    if (conversationHistory.length > MAX_TURNS * 2) {
+        // Keep only the most recent messages
+        conversationHistory = conversationHistory.slice(-(MAX_TURNS * 2));
+        console.log(`History truncated to the last ${MAX_TURNS} turns.`);
+    }
+
     // --- UI and History Update ---
     document.querySelector('main').classList.add('chat-active');
     const currentLang = localStorage.getItem('preferredLanguage') || 'en';
     
-    let userMessageContent = userInput;
-    if (attachedFile && userInput) {
-      userMessageContent = `Image sent with prompt: ${userInput}`;
-    } else if (attachedFile) {
-      userMessageContent = "Image sent.";
+    // Add user's message to the history *before* sending
+    if (userInput) {
+        conversationHistory.push({ role: 'user', content: userInput });
     }
-    conversationHistory.push({ role: 'user', content: userMessageContent });
 
     // --- Create User Bubble ---
     if (userInput || attachedFile) {
@@ -451,74 +459,99 @@ document.addEventListener('DOMContentLoaded', () => {
         box.scrollTop = box.scrollHeight;
     }
     
-    // --- Prepare FormData ---
+
     const formData = new FormData();
     formData.append('prompt', userInput);
     formData.append('language', currentLang);
-    formData.append('history', JSON.stringify(conversationHistory.slice(0, -1)));
-    
-    const imageToSend = attachedFile; // Store the file before we clear it
-    if (imageToSend) {
-        formData.append('image', imageToSend);
+    // Send the already-managed conversation history
+    formData.append('history', JSON.stringify(conversationHistory.slice(0, -1))); // Send history *before* the current prompt
+
+    // Attach the selected model so backend can pick the right LLM
+    formData.append('model', selectedModel);
+
+    if (attachedFile) {
+        formData.append('image', attachedFile);
     }
-    
-    // --- Prepare bot bubble ---
+
+    chatInput.value = "";
+    chatInput.style.height = 'auto';
+    if (attachedFile) {
+      attachedFile = null;
+      fileInput.value = '';
+      imagePreviewContainer.style.display = 'none';
+    }
+
     const botBubble = document.createElement("div");
     botBubble.className = "chat-bubble bot align-self-start text-light";
     botBubble.innerHTML = '<span class="typing-dots">...</span>';
     box.appendChild(botBubble);
     box.scrollTop = box.scrollHeight;
 
-    // --- This is the single, corrected API call block ---
     try {
-        currentAbortController = new AbortController();
-        stopBtn.classList.remove('d-none');
-        sendBtn.disabled = true;
 
-        let fullResponse = "";
-        let targetUrl = imageToSend ? `${VISION_API_URL}/describe_image` : `${TEXT_API_URL}/completion`;
+        const controller = new AbortController();
+        currentAbortController = controller;
+        streamAborted = false;
+        isStreaming = true;
+        stopBtn.style.display = 'inline-block';
+        if (sendBtn) sendBtn.disabled = true;
 
-        const res = await fetch(targetUrl, {
-            method: 'POST',
-            body: formData,
-            signal: currentAbortController.signal
-        });
+        const targetBase = (attachedFile ? VISION_API_BASE : TEXT_API_BASE) || TEXT_API_BASE;
 
+        const res = await fetch(`${targetBase}/completion`, { method: 'POST', body: formData, signal: controller.signal });
         if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
 
-        if (imageToSend) {
-            // --- Handle single JSON response from Vision API ---
-            const data = await res.json();
-            fullResponse = data.content || `[Error: ${data.error}]`;
-            renderFormattedResponse(botBubble, fullResponse);
-        } else {
-            // --- Handle streaming response from Text API ---
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            botBubble.innerHTML = "";
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                // ... (rest of your streaming logic is correct)
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let fullResponse = "";
+        botBubble.innerHTML = "";
+        let aborted = false;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (streamAborted) { aborted = true; break; }
+
+            const chunk = decoder.decode(value);
+            // Server-Sent Events might send multiple data chunks at once
+            const lines = chunk.split('\n\n');
+
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    try {
+                        const jsonStr = line.substring(6);
+                        if (jsonStr) {
+                            const data = JSON.parse(jsonStr);
+                            const token = data.content;
+                            fullResponse += token;
+                            
+                            // Use renderFormattedResponse to handle potential Markdown in the full stream
+                            renderFormattedResponse(botBubble, fullResponse + "▌"); // Add a cursor during streaming
+                            box.scrollTop = box.scrollHeight;
+                        }
+                    } catch (e) {
+                        console.error("Failed to parse JSON chunk:", line);
+                    }
+                }
             }
-            renderFormattedResponse(botBubble, fullResponse); // Final render without cursor
         }
-        
+
+        // Final render without the cursor
+        renderFormattedResponse(botBubble, fullResponse);
         box.scrollTop = box.scrollHeight;
 
         // only save assistant reply if the stream was not aborted
         if (!streamAborted) {
-            conversationHistory.push({ role: 'assistant', content: fullResponse });
+          conversationHistory.push({ role: 'assistant', content: fullResponse });
         }
 
-        // --- Save to Firebase ---
-        if (firebase.auth().currentUser && !streamAborted) {
+        // Save the full response to Firebase
+        if (firebase.auth().currentUser) {
             const db = firebase.firestore();
             const user = firebase.auth().currentUser;
-            const userMessageForDb = {
+            const userMessage = {
                 role: 'user',
                 content: userInput,
-                imageUrl: imageDataUrl,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             };
             const botMessage = {
@@ -528,45 +561,42 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             if (currentSessionId === null) {
+                // This is the first message of a new session
                 const newChatRef = await db.collection("chats").add({
                     uid: user.uid,
-                    title: userInput.substring(0, 40) || "Image Chat",
+                    title: userInput.substring(0, 40), // Use first 40 chars of prompt as title
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 currentSessionId = newChatRef.id;
-                await newChatRef.collection("messages").add(userMessageForDb);
-                await newChatRef.collection("messages").add(botMessage);
-                loadSidebarHistory();
+                // Save the first two messages
+                await newChatRef.collection("messages").add(userMessage);
+                if (!streamAborted) await newChatRef.collection("messages").add(botMessage);
+                loadSidebarHistory(); // Reload sidebar to show the new chat
             } else {
+                // This is an existing session, just add the new messages
                 const chatRef = db.collection("chats").doc(currentSessionId);
-                await chatRef.collection("messages").add(userMessageForDb);
-                await chatRef.collection("messages").add(botMessage);
+                await chatRef.collection("messages").add(userMessage);
+                if (!streamAborted) await chatRef.collection("messages").add(botMessage);
             }
         }
-
     } catch (error) {
-        if (error.name === 'AbortError') {
-            botBubble.textContent = "⏹ Generation stopped.";
-        } else {
-            botBubble.textContent = "⚠️ Error: " + error.message;
-            console.error("API Error:", error);
-        }
-    } finally {
-        // --- CLEANUP ---
-        // This now happens at the very end, after the API call is finished.
-        chatInput.value = "";
-        chatInput.style.height = 'auto';
-        if (imageToSend) {
-          attachedFile = null;
-          fileInput.value = '';
-          imagePreviewContainer.style.display = 'none';
-        }
-        currentAbortController = null;
-        stopBtn.classList.add('d-none');
-        sendBtn.disabled = false;
+      // Handle abort separately so user sees a clear message
+      if (error.name === 'AbortError') {
+        streamAborted = true;
+        botBubble.textContent = "⏹ Generation stopped.";
+      } else {
+        botBubble.textContent = "⚠️ Error: " + error.message;
+        console.error("API Error:", error);
+      }
     }
-});
-
+    finally {
+      // cleanup streaming state
+      isStreaming = false;
+      if (stopBtn) stopBtn.style.display = 'none';
+      if (sendBtn) sendBtn.disabled = false;
+      currentAbortController = null;
+    }
+  });
 
   // Stop button: abort the current streaming request
   if (stopBtn) {
@@ -670,6 +700,5 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     changeLanguage('en');
   }
-
 
 });
