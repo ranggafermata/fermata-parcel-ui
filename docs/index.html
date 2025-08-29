@@ -7,13 +7,9 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script type="module" src="./index.js"></script>
 
   <title>Bangorinas</title>
+  <link rel="icon" type="image/png" href="./assets/Bangorinas Logo.png"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js" defer></script>
@@ -24,23 +20,7 @@
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <script>
-
-  // Firebase initialization
-  const firebaseConfig = {
-    apiKey: "AIzaSyC3v4TFdCxu_aFADmcCZNBqwZi17V4OtE0",
-    authDomain: "fermata-platform-36432.firebaseapp.com",
-    projectId: "fermata-platform-36432",
-    storageBucket: "fermata-platform-36432.firebasestorage.app",
-    messagingSenderId: "571135432891",
-    appId: "1:571135432891:web:b7b030b47ac010f6bcf19e"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-
-  </script>
+  
   <script src="./config.js"></script>
   <script type="module" src="./index.js"></script>
 
@@ -565,6 +545,12 @@
     main.chat-active #image-preview-container {
       transform: translateY(0);
     }
+    #loading {
+      position: absolute;
+      align-items: center;
+      z-index: 1000;
+    }
+
     /* Welcome splash styles */
     #welcome-splash-overlay {
       position: fixed;
@@ -599,12 +585,14 @@
       transform: translateY(0);
     }
 
-    #micro-screen {
+    #micro-screen,
+    #FreePalestine,
+    #paper-screen,
+    #ai-screen,
+    #aboutscreen {
       animation: fadeIn .25s ease-out;
     }
-    #paper-screen {
-      animation: fadeIn .25s ease-out;
-    }
+    
 
     #welcome-splash h2 {
       margin: 0 0 8px 0;
@@ -655,7 +643,10 @@
       transform: scale(0.8);
     }
 
-    #side-info {
+    #side-info,
+    #side-info-ai,
+    #side-info-defense,
+    #side-info-paper {
       position: absolute;
       top: -100px;
       left: -530px;
@@ -669,7 +660,10 @@
       flex-direction: column;
     }
 
-    #side-info:hover {
+    #side-info:hover,
+    #side-info-ai:hover,
+    #side-info-defense:hover,
+    #side-info-paper:hover {
       transition-delay: 1s;
         animation: leftIn .25s ease-out; 
         opacity: 1;
@@ -736,16 +730,19 @@
         transform: scale(0.8);
       }
 
-      #contact {
+      #contact,
+      #Palestine {
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
       }
-      #contact:hover {
+      #contact:hover,
+      #Palestine:hover {
         transform: scale(1.2);
         opacity: 1.0;
       }
-      #contact:active {
+      #contact:active,
+      #Palestine:active {
         transform: scale(1.0);
         
       }
@@ -810,9 +807,14 @@
 </style>
 
 </head>
+  
+
 <body class="d-flex flex-column min-vh-100">
+
+
   
   <div id="welcome-splash-overlay" role="dialog" aria-modal="true" aria-label="Front door to Bangorinas">
+    
 
     <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; background-color: #5a595911;">
       <div id="information" class="btn">
@@ -828,12 +830,19 @@
         <div id="donate-btn" class="btn" style="width: 100%;">
           <img src="./assets/donate1.png" alt="Donate">
             </div>
+        <div id="Palestine" class="btn">
+          <img src="./assets/PalesLogo.png" alt="Donate">
+            </div>   
       </div>
       
     </header>
 
     <div id="welcome-logo">
         <img class="align-items-center" src="./assets/Bangorinas Logo.png"  style="width: 80px; height: 80px;"   alt="Bangorinas Logo">
+    </div>
+
+     <div id="loading">
+        <img class="align-items-center" src="./assets/WelcomeBang.gif"  style="width: 100%; height: 100%;"   alt="Bangorinas Logo">
     </div>
 
     <div id="welcome-splash" class="shadow-sm">
@@ -862,6 +871,29 @@
         </div>
       </div>
 
+       <div id="ai-screen" style="display:none;">
+        <h2 class="text-center">AI Assistant</h2>
+        <p class="text-center text-muted">Choose a model below.</p>
+        <div class="actions" style="justify-content: center;">
+          <img src="./assets/Effort-AI.gif" id="effort-btn" class="btn btn-outline-dark border-0" role="button" alt="Effort-AI">
+          <img src="./assets/Endeavor-AI.gif" id="endeavor-btn" class="btn btn-outline-dark border-0" role="button" alt="Endeavor-AI">
+        </div>
+        <button id="ai-close" class="btn btn-outline-light ms-2">Back</button>
+
+        <div id="side-info-ai" class="d-flex">
+          <div id="side-info-header" class="text-light small">
+            <h4 class="text-muted">AI Assistant</h4>
+          </div>
+          <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Effort 1</h6>
+            <p class="text-muted">Effort is a small and lightweight offline large language model (LLM), it performs well on both CPU and GPU, this generalist model is designed for a general understanding of language, good for any daily task purposes, general text generation, and basic programming.</p>
+          </div>
+          <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Endeavor 1 (preview)</h6>
+            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+          </div>
+        </div>
+      </div>
 
       <!-- Screen 2: Micro-Defense (hidden by default) -->
       <div id="micro-screen" style="display:none;">
@@ -870,8 +902,20 @@
         <div class="actions" style="justify-content: center;">
           <img src="./assets/angeleye1.png" id="ae1-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 1">
           <img src="./assets/angeleye2.png" id="ae2-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 2">
-          
         </div>
+         <div id="side-info-defense" class="d-flex">
+          <div id="side-info-header" class="text-light small">
+            <h4 class="text-muted">Micro-Defense</h4>
+          </div>
+        <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Angel's Eye 1</h6>
+            <p class="text-muted">Angel's Eye 1 (AE 1) is a fully integrated AI-powered threat intelligence tool. With this web-based security app, you can identify, analyze, and investigate any vulnerabilities and potential threats.</p>
+          </div>
+          <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Angel's Eye 2 (preview)</h6>
+            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+          </div>
+          </div>
         <button id="micro-close" class="btn btn-outline-light ms-2">Back</button>
       </div>
 
@@ -883,7 +927,29 @@
           <img src="./assets/paper1.png" id="paper1-btn"  class="btn btn-outline-dark border-0" role="button" alt="Paper Type 1">
           <img src="./assets/paper2.png" id="paper2-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 2">
         </div>
+        <div id="side-info-paper" class="d-flex">
+          <div id="side-info-header" class="text-light small">
+            <h4 class="text-muted">Papers</h4>
+          </div>
+        <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Effort 1</h6>
+            <p class="text-muted">Effort is a small and lightweight offline large language model (LLM), it performs well on both CPU and GPU, this generalist model is designed for a general understanding of language, good for any daily task purposes, general text generation, and basic programming.</p>
+          </div>
+          <div id="side-info-content" class="text-light small">
+            <h6 class="text-muted">Endeavor 1 (preview)</h6>
+            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+          </div>
+          </div>
         <button id="paper-close" class="btn btn-outline-light ms-2">Back</button>
+      </div>
+
+      <div id="FreePalestine" style="display: none;">
+        <h2 class="text-center">Free Palestine!</h2>
+        <p class="text-center text-muted">Free... Free... Palestine!!!</p>
+        <div class="actions" style="justify-content: center;">
+          <img src="./assets/PalesFlag.png"  id="PalesBtn" class="btn btn-outline-dark border-0" alt="FreePalestine">
+        </div>
+        <button id="FreePalestine-close" class="btn btn-outline-light ms-2">Back</button>
       </div>
 
       <!-- Screen 4: Paypal (hidden by default) -->
@@ -899,7 +965,7 @@
 
       <!-- Screen 5: contact (hidden by default) -->
        <div id="contact-screen" style="display: none;">
-         <h2 class="text-center">Contact Me</h2>
+         <h2 class="text-center">Contact me</h2>
          <p class="text-center text-muted">If you have any questions or feedback, feel free to reach out!</p>
          <div class="actions" style="justify-content: center;">
            <img src="./assets/linkedin.png" id="linkedin" class="btn btn-outline-dark border-0" role="button">
@@ -922,7 +988,18 @@
            <img src="./assets/UfoFighter.png" id="ufo-fighter" class="btn btn-outline-dark border-0" role="button">
           </div>
           <button id="arcade-close" class="btn btn-outline-light ms-2">Back</button>
+       </div>
 
+       <div id="aboutscreen" style="display: none;">
+         <h2 class="text-center">About me</h2>
+         <p class="text-center text-muted">I built this platform with love and patience, I only spent $20 from my pocket for this project, I am not a rich man, I and my tech-works I developed are still less than perfect, I work alone for this, man!.. I care about all of you, I care about myself, trying to race with my fate, but I am still living in this cage, I just don't want to drown in the lake...</p>
+         <p class="text-center text-muted">I am the genius behind this platform, behind this programmed wall...
+My desire to become a billionaire "poco-a-poco" began to fade.
+Some people called me, I am "the guy"... a hypertalented one.
+I lost to the fools, but I realized I was the weird one.
+As you can see, even a fool of a parliament can have big ammount of royalties... royalties that come from loyalty, but they are loyal to their bosses, and I am loyal only to God Almighty.</p>
+         <p class="text-center text-muted">So, please.. feel free to use all the features here! If you want to support me, you can do so by sharing this project with others or by making a small donation. Every little bit helps!</p>
+         <button id="about-close" class="btn btn-outline-light ms-2">Back</button>
        </div>
 
     </div>
@@ -931,209 +1008,17 @@
 
 
 
-    <div id="spotify-embed">
-      <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="695" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-    </div>
-    <footer class="text-center text-muted py-3 small" style="position: absolute; bottom: 0; width: 100%;">
-      © <span id="year"></span> Bangorinas — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
-    </footer>
-  </div>
-
-   
-
-  
-
-  <!-- Sidebar -->
-  <div id="sidebar">
-    <div id="sidebarToggle">
-      <div class="bar1"></div>
-      <div class="bar2"></div>
-      <div class="bar3"></div>  
-    </div>
-    <h5 class="text-light">Recent</h5>
-    <ul class="list-unstyled text-light small" id="chat-history">
-      <li>No history yet</li>
-    </ul>
-    <div id="sidebarFooter" class="d-flex justify-content-between align-items-center">
-      <div id="main-menu" class="text-light medium bold" role="button">Main menu</div>
-
-    </div>
-    <div id="sidebarHandle" class="d-flex justify-content-center align-items-center"></div>
-    
-
-  </div>
-
-  <!-- Auth Notice -->
-  <div id="authNotice">
-    <span>Sign in to save your chat history and access personalized features.</span>
-    <button onclick="this.parentElement.style.display='none'" class="btn btn-sm btn-outline-light ms-3">Close</button>
-  </div>
-
-  
-  <!-- Header -->
-  <nav class="navbar px-4 py-2 d-flex justify-content-end align-items-center gap-3">
-    <div class="dropdown">
-      <span id="modelDropdown" class="text-light fw-semibold text-opacity-75 me-4 ms-2" role="button" data-bs-toggle="dropdown" aria-expanded="false">Models</span><span id="currentModelBadge" class="small text-muted ms-2 me-4">Effort 1</span>
-      <ul class="dropdown-menu dropdown-menu-end bg-dark text-light">
-        <li><button class="dropdown-item text-light bg-dark" onclick="effort()">Effort 1</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="endeavor()">Endeavor 1 (preview)</button></li>
-      </ul>
-    </div>
-    <div class="dropdown">
-      <img src="./assets/icons8-language-32.png" height="28" class="dropdown-toggle me-2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-      <ul class="dropdown-menu dropdown-menu-end bg-dark text-light">
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('en')">English</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('id')">Indonesia</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('fr')">Français</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('es')">Español</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('ru')">Русский</button></li>
-        <li><button class="dropdown-item text-light bg-dark" onclick="changeLanguage('uk')">українська</button></li>
-      </ul>
-    </div>
-    <div class="dropdown">
-      <img id="userIcon" src="./assets/icons8-user-32__1_.png" height="32" class="rounded-circle dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-<ul class="dropdown-menu dropdown-menu-end bg-dark text-light" id="userDropdown">
-        <li id="userInfo" class="dropdown-item text-light bg-dark d-none"></li>
-        <li id="signinOption"><button class="dropdown-item text-light bg-dark" onclick="signIn()">Sign in with Google</button></li>
-        <li id="signoutOption" class="d-none"><button class="dropdown-item text-light bg-dark" onclick="signOut()">Sign out</button></li>
-      </ul>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="flex-grow-1 text-center">
-    <h1 id="hello-text" class="my-4">Hello!</h1>
-    <div id="response-box" class="mt-2 w-100 text-start rounded" style="min-height: 200px; max-height: 700px; max-width: 850px;"></div>
-    
-
-    <form id="chat-form" class="w-100 mt-4">
-      <div class="input-group chat-input-group">
-        <div id="image-preview-container" class="mb-2 text-center" style="display: none; transform: translateY(5px); transition: transform 0.5s ease-in-out;">
-      <img id="image-preview" src="#" alt="Image preview" />
-      <button id="remove-image-btn">&times;</button>
-    </div>
-      <div class="d-flex justify-content-center">
-        <button class="btn btn-outline-dark border-0" type="button" id="file-btn" title="Attach file">
-          <img src="./assets/icons8-clip-32.png" height="20" alt="Attach File Icon">
-        </button>
-        <button class="btn btn-outline-dark border-0" type="button" id="researchBtn" title="Research">
-          <img src="./assets/research.png" height="20" alt="Research Icon">
-        </button>
-         <input type="file" id="file-input" style="display:none" accept="image/*">
+      <div id="spotify-embed">
+        <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="695" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
-  <textarea id="chat-input" class="form-control" placeholder="Ask anything..." rows="1"></textarea>
-  <button class="btn btn-outline-dark rounded border-0" id="send-btn" type="submit">
-    <img src="./assets/icons8-sent-32.png" height="20" alt="Send Icon">
-  </button>
-  <button class="btn btn-outline-dark rounded border-0" id="stop-btn" type="button" style="display: none;">
-    <img src="./assets/stop.png" height="20" alt="Stop Icon">
-  </button>
-</div>
-        
-    
-</form>
-  </main>
-
-  <!-- Footer -->
-  <footer class="text-center text-muted py-3 small">
-    © <span id="year"></span> Bangorinas AI — Developed by Rangga Hermawan (A.K.A Rangga Fermata)
-  </footer>
-
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content bg-dark text-light">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title">Confirm Deletion</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <p>Are you sure you want to delete this chat session? This action cannot be undone.</p>
-          <p class="text-warning small" id="chatTitleToDelete"></p>
-        </div>
-        <div class="modal-footer border-secondary">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-        </div>
-      </div>
-    </div>
+      <footer class="text-center text-muted py-3 small" style="position: absolute; bottom: 0; width: 100%;">
+        © <span id="year"></span> Bangorinas — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+      </footer>
   </div>
 
-  <div class="modal fade" id="researchModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content bg-dark text-light">
-        <div class="modal-header border-secondary">
-          <h5 class="modal-title">Research Tool</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-
-        <div class="modal-body">
-        <ul class="nav nav-tabs" id="researchTab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="search-tab" data-bs-toggle="tab" data-bs-target="#search-pane" type="button" role="tab">Search</button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="extract-tab" data-bs-toggle="tab" data-bs-target="#extract-pane" type="button" role="tab">Extract Content</button>
-          </li>
-        </ul>
-
-          <div class="tab-content" id="researchBtn">
-
-            <div class="tab-pane fade show active" id="search-pane" role="tabpanel" aria-labelledby="search-tab">
-              <div class="input-group mb-3">
-                <input type="text" id="researchQuerySearch" class="form-control bg-secondary text-light border-dark" placeholder="Enter search query or URL...">
-                <button class="btn btn-primary" id="researchSubmitBtnSearch">Search</button>
-              </div>
-            </div>
-
-            <div class="tab-pane fade" id="extract-pane" role="tabpanel" aria-labelledby="extract-tab">
-              <div class="input-group">
-                <input type="text" id="researchQueryExtract" class="form-control bg-secondary text-light border-dark" placeholder="Paste a URL to extract its content...">
-                <button class="btn btn-primary" id="researchSubmitBtnExtract">Extract</button>
-              </div>
-            </div>
-
-          </div>
-
-          <pre id="researchResult" style="max-height: 60vh; overflow-y: auto; background-color: #1a1a1a; padding: 1rem; border-radius: 0.5rem;"></pre>
-        </div>
-      </div>
-    </div>
-</div>
   <!-- Sidebar Toggle & Auth UI Logic -->
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
-    
-    function signIn() {
-      if (typeof firebase !== 'undefined') {
-        const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider);
-      }
-    }
-
-    function signOut() {
-      firebase.auth().signOut();
-    }
-
-    firebase.auth().onAuthStateChanged((user) => {
-      const dropdown = document.getElementById('userDropdown');
-      const signin = document.getElementById('signinOption');
-      const signout = document.getElementById('signoutOption');
-      const info = document.getElementById('userInfo');
-
-      if (user) {
-        signin.classList.add('d-none');
-        signout.classList.remove('d-none');
-        info.classList.remove('d-none');
-        info.innerHTML = `<strong>${user.displayName}</strong><br><small>${user.email}</small>`;
-      } else {
-        signin.classList.remove('d-none');
-        signout.classList.add('d-none');
-        info.classList.add('d-none');
-        setTimeout(() => {
-          document.getElementById('authNotice').style.display = 'block';
-        }, 1500);
-      }
-    });
   </script>
   <script>
     (function () {
@@ -1141,11 +1026,14 @@
       const KEY = 'fermata_welcome_hidden';
       const overlay = document.getElementById(OVERLAY_ID);
       const welcomeScreen = document.getElementById('welcome-screen');
+      const aiScreen = document.getElementById('ai-screen');
       const microScreen = document.getElementById('micro-screen');
       const paypalScreen = document.getElementById('paypal-screen');
       const contactScreen = document.getElementById('contact-screen');
       const paperScreen = document.getElementById('paper-screen');
       const bangorinasLogo = document.getElementById('welcome-logo');
+      const freePalestineScreen = document.getElementById('FreePalestine');
+      const aboutScreen = document.getElementById('aboutscreen');
 
       const bangorBtn = document.getElementById('btn-bangorinas');
       const microBtn = document.getElementById('btn-micro');
@@ -1169,7 +1057,14 @@
       const paper1Btn = document.getElementById('paper1-btn');
       const paper2Btn = document.getElementById('paper2-btn');
       const paperCloseBtn = document.getElementById('paper-close');
-
+      const effortBtn = document.getElementById('effort-btn');
+      const endeavorBtn = document.getElementById('endeavor-btn');
+      const aiCloseBtn = document.getElementById('ai-close');
+      const FreePalestineBtn = document.getElementById('Palestine');
+      const PalesBtn = document.getElementById('PalesBtn');
+      const FreePalestineCloseBtn = document.getElementById('FreePalestine-close');
+      const aboutBtn = document.getElementById('information');
+      const aboutCloseBtn = document.getElementById('about-close');
 
       function showOverlay() {
         if (!overlay) return;
@@ -1182,6 +1077,20 @@
         overlay.style.display = 'none';
       }
 
+      function showPalestine() {
+        if (!freePalestineScreen) return;
+        freePalestineScreen.style.display = '';
+        bangorinasLogo.style.display = '';
+        welcomeScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
+      }
+
       function showWelcome() {
         if (!welcomeScreen) return;
         welcomeScreen.style.display = '';
@@ -1191,10 +1100,29 @@
         contactScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
+      }
+
+      function showAI() {
+        if (!aiScreen) return;
+        aiScreen.style.display = '';
+        welcomeScreen.style.display = 'none';
+        bangorinasLogo.style.display = 'none';
+        microScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        bangorinasLogo.style.display = '';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
 
       function showMicro() {
-        if (!welcomeScreen) return;
+        if (!microScreen) return;
+        microScreen.style.display = '';
         welcomeScreen.style.display = 'none';
         bangorinasLogo.style.display = '';
         microScreen.style.display = '';
@@ -1202,6 +1130,9 @@
         contactScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
       function showPaypal() {
         if (!paypalScreen) return;
@@ -1212,6 +1143,9 @@
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
         bangorinasLogo.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
       function showContact() {
         if (!contactScreen) return;
@@ -1222,6 +1156,9 @@
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
         bangorinasLogo.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
       function showArcade() {
         if (!arcadeScreen) return;
@@ -1232,6 +1169,9 @@
         welcomeScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         paperScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
       function showPaper() {
         if (!paperScreen) return;
@@ -1242,7 +1182,25 @@
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
       }
+
+      function showAbout() {
+        if (!aboutScreen) return;
+        aboutScreen.style.display = '';
+        bangorinasLogo.style.display = '';
+        paperScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+      }
+
 
       document.addEventListener('DOMContentLoaded', function () {
         if (!localStorage.getItem(KEY)) {
@@ -1252,7 +1210,7 @@
 
       // Left button: enter main site (close splash)
       if (bangorBtn) bangorBtn.addEventListener('click', function () {
-        hideOverlay();
+        showAI();
       });
 
       // Right button: switch to Micro-Defense splash
@@ -1369,6 +1327,72 @@
         });
       }
 
+      if (aiCloseBtn) {
+        aiCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (FreePalestineBtn) {
+        FreePalestineBtn.addEventListener('click', function () {
+          showPalestine();
+        });
+      }
+
+      if (PalesBtn) {
+        PalesBtn.addEventListener('click', function () {
+          window.open('https://eye-on-palestine.org/', '_blank', 'noopener');
+        });
+      }
+
+      if (FreePalestineCloseBtn) {
+        FreePalestineCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (aboutBtn) {
+        aboutBtn.addEventListener('click', function () {
+          showAbout();
+        });
+      }
+
+      if (aboutCloseBtn) {
+        aboutCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+    })();
+  </script>
+   <script>
+    // Show overlay as a short loading screen and fade out smoothly
+    (function () {
+      const loadingScreen = document.getElementById('loading');
+      if (!loadingScreen) return;
+
+      // Make visible (display + trigger CSS transition)
+      loadingScreen.style.display = 'flex';
+      // Allow layout to apply then set opacity -> transition will run
+      requestAnimationFrame(() => {
+        loadingScreen.style.visibility = 'visible';
+        loadingScreen.style.opacity = '1';
+        loadingScreen.style.pointerEvents = 'auto';
+      });
+
+      // After visible time, fade out then remove from flow after transition
+      const VISIBLE_MS = 3500;
+      setTimeout(() => {
+        loadingScreen.style.opacity = '0';
+        loadingScreen.style.pointerEvents = 'none';
+        loadingScreen.style.visibility = 'hidden';
+        loadingScreen.addEventListener('transitionend', function onEnd(e) {
+          if (e.propertyName === 'opacity') {
+            loadingScreen.style.display = 'none';
+            loadingScreen.removeEventListener('transitionend', onEnd);
+          }
+        });
+      }, VISIBLE_MS);
     })();
   </script>
 
