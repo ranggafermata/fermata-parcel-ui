@@ -660,6 +660,19 @@
       flex-direction: column;
     }
 
+    #game-sider{
+      position: absolute;
+      top: -100px;
+      left: -530px;
+      height: 100%; /* Make it full viewport height */
+      width: 310px;
+      padding: 1rem;
+      z-index: 1050;
+      cursor: pointer;
+      display: flex; /* Make it a flex container by default */
+      flex-direction: column;
+    }
+
     #side-info:hover,
     #side-info-ai:hover,
     #side-info-defense:hover,
@@ -787,7 +800,7 @@
       #spotify-embed {
         position: absolute;
         top: 120px;
-        left: 1540px;
+        left: 1560px;
         bottom: 0;
         width: 100%;
         height: 695px;
@@ -890,7 +903,7 @@
           </div>
           <div id="side-info-content" class="text-light small">
             <h6 class="text-muted">Endeavor 1 (preview)</h6>
-            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+            <p class="text-muted">Endeavor is an offline model with higher precision, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
           </div>
         </div>
       </div>
@@ -913,7 +926,7 @@
           </div>
           <div id="side-info-content" class="text-light small">
             <h6 class="text-muted">Angel's Eye 2 (preview)</h6>
-            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+            <p class="text-muted">Angel's Eye 2 or AE 2 (preview) is an orbital version of the threat intelligence tool, offering enhanced features and capabilities for identifying and mitigating potential threats in satellite communications, including advanced anomaly detection and real-time monitoring. In the future updates, I will integrate it with GPS-tracking integration and sensing imagery.</p>
           </div>
           </div>
         <button id="micro-close" class="btn btn-outline-light ms-2">Back</button>
@@ -932,12 +945,7 @@
             <h4 class="text-muted">Papers</h4>
           </div>
         <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Effort 1</h6>
-            <p class="text-muted">Effort is a small and lightweight offline large language model (LLM), it performs well on both CPU and GPU, this generalist model is designed for a general understanding of language, good for any daily task purposes, general text generation, and basic programming.</p>
-          </div>
-          <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Endeavor 1 (preview)</h6>
-            <p class="text-muted">Endeavor is an offline hybrid reasoning model to unify reasoning (long chains of thought that improve answer accuracy) and normal response modes into one model, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+            <p class="text-muted">You can access my research papers and articles. If you want to see more the specific topics or papers, you can go to https://isbi.academia.edu/RanggaFermata</p>
           </div>
           </div>
         <button id="paper-close" class="btn btn-outline-light ms-2">Back</button>
@@ -983,9 +991,13 @@
          <h2 class="text-center">Play!</h2>
          <p class="text-center text-muted">Get ready to play some classic arcade games!</p>
          <div class="actions" style="justify-content: center;">
-           <img src="./assets/AdventureCar.png" id="adventure-car" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/AdventureCar.png" id="3-pedals" class="btn btn-outline-dark border-0" role="button">
            <img src="./assets/BigL.png" id="big-l" class="btn btn-outline-dark border-0" role="button">
-           <img src="./assets/UfoFighter.png" id="ufo-fighter" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/UfoFighter.png" id="Ufo-run" class="btn btn-outline-dark border-0" role="button">
+          </div>
+          <div id="game-sider" class="d-flex">
+          <iframe src="https://chromedino.com/color/" frameborder="0" scrolling="no" width="60%" height="80%" loading="lazy"></iframe>
+          <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
           </div>
           <button id="arcade-close" class="btn btn-outline-light ms-2">Back</button>
        </div>
@@ -1065,6 +1077,9 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const FreePalestineCloseBtn = document.getElementById('FreePalestine-close');
       const aboutBtn = document.getElementById('information');
       const aboutCloseBtn = document.getElementById('about-close');
+      const threePedalsBtn = document.getElementById('3-pedals');
+      const bigLBtn = document.getElementById('big-l');
+      const UfoBtn = document.getElementById('Ufo-run');
 
       function showOverlay() {
         if (!overlay) return;
@@ -1213,17 +1228,17 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         showAI();
       });
 
-      // Right button: switch to Micro-Defense splash
-      if (microBtn) microBtn.addEventListener('click', function () {
-        showMicro();
-      });
-
       if (effortBtn) effortBtn.addEventListener('click', function () {
         window.open('https://huggingface.co/bangorinas/Effort-1/resolve/main/Effort-1.0.0-win.zip');
       });
 
       if (endeavorBtn) endeavorBtn.addEventListener('click', function () {
-        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor%201.zip');
+        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor-1.0.0-win.zip');
+      });
+
+      // Right button: switch to Micro-Defense splash
+      if (microBtn) microBtn.addEventListener('click', function () {
+        showMicro();
       });
 
       if (ae1Btn) ae1Btn.addEventListener('click', function () {
@@ -1371,6 +1386,24 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         });
       }
 
+      if (threePedalsBtn) {
+        threePedalsBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/3-pedals/', '_blank', 'noopener');
+        });
+      }
+
+      if (bigLBtn) {
+        bigLBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/big-l/', '_blank', 'noopener');
+        });
+      }
+
+      if (UfoBtn) {
+        UfoBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/ufo-run', '_blank', 'noopener');
+        });
+      }
+
     })();
   </script>
    <script>
@@ -1406,7 +1439,4 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
 
 </body>
 </html>
-
-
-
 
