@@ -939,6 +939,8 @@
         <div class="actions" style="justify-content: center;">
           <img src="./assets/paper1.png" id="paper1-btn"  class="btn btn-outline-dark border-0" role="button" alt="Paper Type 1">
           <img src="./assets/paper2.png" id="paper2-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 2">
+          <img src="./assets/paper3.png" id="paper3-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 3">
+          <img src="./assets/paper4.png" id="paper4-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 4">
         </div>
         <div id="side-info-paper" class="d-flex">
           <div id="side-info-header" class="text-light small">
@@ -1068,6 +1070,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const paperBtn = document.getElementById('btn-paper');
       const paper1Btn = document.getElementById('paper1-btn');
       const paper2Btn = document.getElementById('paper2-btn');
+      const paper3Btn = document.getElementById('paper3-btn');
+      const paper4Btn = document.getElementById('paper4-btn');
       const paperCloseBtn = document.getElementById('paper-close');
       const effortBtn = document.getElementById('effort-btn');
       const endeavorBtn = document.getElementById('endeavor-btn');
@@ -1341,6 +1345,18 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       if (paper2Btn) {
         paper2Btn.addEventListener('click', function () {
           window.open('https://docs.google.com/document/d/e/2PACX-1vSchTW_qbltOZ7sAzL5wdEDsbBM5P-s8NjcdU7vn2PPx4vrxqdfxmQWfzTCa7JtrHUz9jynelQ0uzaL/pub', '_blank', 'noopener');
+        });
+      }
+
+      if (paper3Btn) {
+        paper3Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vQgdqEsmoLyKHUQXS7tauHXkeuagcxU5wOcnozFejBvFmyb9zIxynGX7bVX6uE5vwlbFpO5XjEcIh9K/pub', '_blank', 'noopener');
+        });
+      }
+
+      if (paper4Btn) {
+        paper4Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vTt4JEq7AW3BNMcwgy6Uqss77W6c1xthgzGm9h1YNh-O1NWtdJDUMTN7vILY6Qdx7JUFSioQl8TlyOy/pub', '_blank', 'noopener');
         });
       }
 
