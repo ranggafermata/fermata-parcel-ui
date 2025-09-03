@@ -798,23 +798,30 @@
       }
 
       #spotify-embed {
-        position: absolute;
-        top: 120px;
-        left: 1560px;
-        bottom: 0;
-        width: 100%;
-        height: 695px;
-        opacity: 0;
-        cursor: pointer;
-        display: flex;
-        flex-direction: column-reverse;
-        justify-content: space-around;
+         position: absolute;
+          top: 210px;
+          right: 0px;
+          height: 65%; /* Make it full viewport height */
+          width: 310px;
+          padding: 1rem;
+          opacity: 0;
+          z-index: 1000;
+          cursor: pointer;
+          display: flex; /* Make it a flex container by default */
+          flex-direction: column-reverse;
 
       }
       #spotify-embed:hover {
         transition-delay: 1s;
         animation: leftIn .25s ease-out; 
         opacity: 1;
+      }
+
+      #docs {
+        position: absolute;
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column-reverse;
       }
 
 </style>
@@ -886,12 +893,13 @@
 
        <div id="ai-screen" style="display:none;">
         <h2 class="text-center">AI Assistant</h2>
-        <p class="text-center text-muted">Choose a model below.</p>
+        <p class="text-center text-muted">I recommend using the Effort model first, is a great way to get started.</p>
         <div class="actions" style="justify-content: center;">
           <img src="./assets/Effort-AI.gif" id="effort-btn" class="btn btn-outline-dark border-0" role="button" alt="Effort-AI">
           <img src="./assets/Endeavor-AI.gif" id="endeavor-btn" class="btn btn-outline-dark border-0" role="button" alt="Endeavor-AI">
         </div>
         <button id="ai-close" class="btn btn-outline-light ms-2">Back</button>
+        <button id="docs" class="btn btn-outline-light ms-2">Documentation/Manual Installation</button>
 
         <div id="side-info-ai" class="d-flex">
           <div id="side-info-header" class="text-light small">
@@ -903,7 +911,7 @@
           </div>
           <div id="side-info-content" class="text-light small">
             <h6 class="text-muted">Endeavor 1</h6>
-            <p class="text-muted">Endeavor is an offline AI model with higher precision, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
+            <p class="text-muted">Endeavor is an offline model with higher precision, making this model more powerful and versatile model, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
           </div>
         </div>
       </div>
@@ -911,7 +919,7 @@
       <!-- Screen 2: Micro-Defense (hidden by default) -->
       <div id="micro-screen" style="display:none;">
         <h2 class="text-center">Micro-Defense</h2>
-        <p class="text-center text-muted">Choose an access environment below.</p>
+        <p class="text-center text-muted">Hey, agent 23... come in... over.</p>
         <div class="actions" style="justify-content: center;">
           <img src="./assets/angeleye1.png" id="ae1-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 1">
           <img src="./assets/angeleye2.png" id="ae2-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 2">
@@ -935,7 +943,7 @@
       <!-- Screen 3: Paper (hidden by default) -->
       <div id="paper-screen" style="display: none;">
         <h2 class="text-center">Papers</h2>
-        <p class="text-center text-muted">Choose a paper document below.</p>
+        <p class="text-center text-muted">It's reading time! Grab your favorite paper and dive in.</p>
         <div class="actions" style="justify-content: center;">
           <img src="./assets/paper1.png" id="paper1-btn"  class="btn btn-outline-dark border-0" role="button" alt="Paper Type 1">
           <img src="./assets/paper2.png" id="paper2-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 2">
@@ -1023,7 +1031,7 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
 
 
       <div id="spotify-embed">
-        <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="695" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="400" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
       <footer class="text-center text-muted py-3 small" style="position: absolute; bottom: 0; width: 100%;">
         © <span id="year"></span> Bangorinas — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
@@ -1076,6 +1084,7 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const effortBtn = document.getElementById('effort-btn');
       const endeavorBtn = document.getElementById('endeavor-btn');
       const aiCloseBtn = document.getElementById('ai-close');
+      const docsBtn = document.getElementById('docs');
       const FreePalestineBtn = document.getElementById('Palestine');
       const PalesBtn = document.getElementById('PalesBtn');
       const FreePalestineCloseBtn = document.getElementById('FreePalestine-close');
@@ -1237,7 +1246,7 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       });
 
       if (endeavorBtn) endeavorBtn.addEventListener('click', function () {
-        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor%201.zip');
+        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor-1.0.0-win.zip');
       });
 
       // Right button: switch to Micro-Defense splash
@@ -1372,6 +1381,12 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         });
       }
 
+      if (docsBtn) {
+        docsBtn.addEventListener('click', function () {
+          window.open('https://fermata-ai.my.canva.site/bangorinas-ai', '_blank', 'noopener');
+        });
+      }
+
       if (FreePalestineBtn) {
         FreePalestineBtn.addEventListener('click', function () {
           showPalestine();
@@ -1430,6 +1445,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
 
       // Make visible (display + trigger CSS transition)
       loadingScreen.style.display = 'flex';
+      
+      
       // Allow layout to apply then set opacity -> transition will run
       requestAnimationFrame(() => {
         loadingScreen.style.visibility = 'visible';
@@ -1455,6 +1472,4 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
 
 </body>
 </html>
-
-
 
