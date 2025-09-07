@@ -10,7 +10,7 @@
 
   <title>Bangorinas</title>
   <link rel="icon" type="image/png" href="./assets/Bangorinas Logo.png"/>
-
+  
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
@@ -560,6 +560,8 @@
       padding: 1rem;
       animation: fadeIn .25s ease-out;
     }
+   
+
     #welcome-logo {
       position: absolute;
       align-items: center;
@@ -577,6 +579,23 @@
       /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
       text-align: left;
       transform: translateY(0);
+    }
+
+    #endeavorConfirmation,
+    #effortConfirmation {
+      /* background: linear-gradient(180deg, #14141405 10%, #29282815 90%); */
+      position: absolute;
+      border-radius: 12px;
+      padding: 26px;
+      max-width: 800px;
+      width: 100%;
+      /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
+      text-align: center;
+      bottom: -32px;
+      background-color: rgb(24, 24, 24);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74);
+      z-index: 3000;
+      animation: fadeIn .25s ease-out;
     }
 
     #micro-screen,
@@ -737,8 +756,14 @@
         transform: scale(0.8);
       }
 
-      #contact,
+      #contact {
+        transform: scale(0.8);
+        transition: transform 0.2s ease;
+        border: none;
+      }
+      
       #Palestine {
+        opacity: 0;
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
@@ -893,6 +918,16 @@
         </div>
         <button id="ai-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
         <button id="docs" class="btn btn-outline-light ms-2">Documentation/Manual Installation</button>
+        <div id="effortConfirmation" class="text-center" style="display: none;">
+          <p id="effortConfirmationText" class="text-muted">Effort model is relatively small in size (~2.0GB) should run well on CPU, and make sure you have a stable internet connection. Do you want to proceed?</p>
+          <button id="confirm-effort" class="btn btn-outline-light me-2">Yes, proceed</button>
+          <button id="cancel-effort" class="btn btn-outline-light ms-2">No, go back</button>
+        </div>
+        <div id="endeavorConfirmation" class="text-center" style="display: none;">
+          <p id="endeavorConfirmationText" class="text-muted">Endeavor model is quite large in size (~3.43GB) it will uses more hardware requirements and may take a while to download, make sure you have a stable internet connection, and enough storage space on your device. Do you want to proceed?</p>
+          <button id="confirm-endeavor" class="btn btn-outline-light me-2">Yes, proceed</button>
+          <button id="cancel-endeavor" class="btn btn-outline-light ms-2">No, go back</button>
+        </div>
 
         <div id="side-info-ai" class="d-flex">
           <div id="side-info-header" class="text-light small">
@@ -1032,6 +1067,7 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       <footer class="text-center text-muted py-3 small" style="position: absolute; bottom: 0; width: 100%;">
         © <span id="year"></span> Bangorinas — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
+      
   </div>
 
   <!-- Sidebar Toggle & Auth UI Logic -->
@@ -1077,8 +1113,14 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const paper3Btn = document.getElementById('paper3-btn');
       const paper4Btn = document.getElementById('paper4-btn');
       const paperCloseBtn = document.getElementById('paper-close');
-      const effortBtn = document.getElementById('effort-btn');
       const endeavorBtn = document.getElementById('endeavor-btn');
+      const endeavorConfirmation = document.getElementById('endeavorConfirmation');
+      const confirmEndeavorBtn = document.getElementById('confirm-endeavor');
+      const cancelEndeavorBtn = document.getElementById('cancel-endeavor');
+      const effortBtn = document.getElementById('effort-btn');
+      const effortConfirmation = document.getElementById('effortConfirmation');
+      const confirmEffortBtn = document.getElementById('confirm-effort');
+      const cancelEffortBtn = document.getElementById('cancel-effort');
       const aiCloseBtn = document.getElementById('ai-close');
       const docsBtn = document.getElementById('docs');
       const FreePalestineBtn = document.getElementById('Palestine');
@@ -1113,6 +1155,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         paperScreen.style.display = 'none';
         aiScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
 
       function showWelcome() {
@@ -1127,6 +1171,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
 
       function showAI() {
@@ -1157,6 +1203,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
       function showPaypal() {
         if (!paypalScreen) return;
@@ -1170,6 +1218,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
       function showContact() {
         if (!contactScreen) return;
@@ -1183,6 +1233,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
       function showArcade() {
         if (!arcadeScreen) return;
@@ -1196,6 +1248,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
       function showPaper() {
         if (!paperScreen) return;
@@ -1209,6 +1263,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
 
       function showAbout() {
@@ -1223,6 +1279,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         arcadeScreen.style.display = 'none';
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
       }
 
 
@@ -1238,11 +1296,29 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       });
 
       if (effortBtn) effortBtn.addEventListener('click', function () {
+        effortConfirmation.style.display = '';
+        endeavorConfirmation.style.display = 'none';
+      });
+
+      if (confirmEffortBtn) confirmEffortBtn.addEventListener('click', function () {
         window.open('https://huggingface.co/bangorinas/Effort-1/resolve/main/Effort-1.0.0-win.zip');
       });
 
+      if (cancelEffortBtn) cancelEffortBtn.addEventListener('click', function () {
+        effortConfirmation.style.display = 'none';
+      });
+
       if (endeavorBtn) endeavorBtn.addEventListener('click', function () {
-        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor-1.0.0-win.zip');
+        endeavorConfirmation.style.display = '';
+        effortConfirmation.style.display = 'none';
+      });
+
+      if (confirmEndeavorBtn) confirmEndeavorBtn.addEventListener('click', function () {
+        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor-1.zip');
+      });
+
+      if (cancelEndeavorBtn) cancelEndeavorBtn.addEventListener('click', function () {
+        endeavorConfirmation.style.display = 'none';
       });
 
       // Right button: switch to Micro-Defense splash
