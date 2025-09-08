@@ -19,7 +19,7 @@
   <script type="module" src="./index.js"></script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6853406802701388"
      crossorigin="anonymous"></script>
-  
+
   <script 
   src="https://www.paypal.com/sdk/js?client-id=BAAIWZ8P_O1p0GCNJQMqubBix4KL-kddLHWRai5d_WCOCYUIq4nHxaagQpUCU7U-inlu6lA4JRWnU9doAk&components=hosted-buttons&disable-funding=venmo&currency=USD">
 </script>
@@ -758,24 +758,44 @@
         transform: scale(0.8);
       }
 
-      #contact {
+      #contact,
+      #sittight,
+      #flores {
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
+      }
+
+      #flores:hover {
+        opacity: 1;
+        transform: scale(1.2);
+        background-image: url("./assets/Flower.png");
+        background-size: contain;
+        background-repeat: no-repeat;
       }
       
       #Palestine {
-        opacity: 0;
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
       }
-      #contact:hover,
+
       #Palestine:hover {
+        opacity: 1;
+        transform: scale(1.2);
+        background-image: url("./assets/PalesLogo.png");
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+
+      #contact:hover,
+      #sittight:hover {
         transform: scale(1.2);
         opacity: 1.0;
       }
       #contact:active,
+      #sittight:active,
+      #flores:active,
       #Palestine:active {
         transform: scale(1.0);
         
@@ -857,21 +877,30 @@
     
 
     <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; background-color: #5a595911;">
+    <div id="side-info-footer-1" class="actions" style="justify-content: center;">
       <div id="information" class="btn">
           <img src="./assets/information.png" alt="Information">
         </div> 
+        <div id="contact" class="btn">
+          <img src="./assets/contact.png" alt="Contact">
+        </div>
+        <div id="donate-btn" class="btn">
+          <img src="./assets/donate1.png" alt="Donate">
+            </div>
+          </div>
       <div id="side-info-footer" class="actions" style="justify-content: center;">
         <div id="play" class="btn">
               <img src="./assets/playanimated.gif" alt="play">
             </div>
-        <div id="contact" class="btn">
-          <img src="./assets/contact.png" alt="Contact">
-        </div>
-        <div id="donate-btn" class="btn" style="width: 100%;">
-          <img src="./assets/donate1.png" alt="Donate">
+        
+        <div id="sittight" class="btn">
+          <img src="./assets/sittight.png" alt="Sit Tight">
+            </div>
+        <div id="flores" class="btn">
+          <img src="./assets/flores.png" alt="Flores">
             </div>
         <div id="Palestine" class="btn">
-          <img src="./assets/PalesLogo.png" alt="Donate">
+          <img src="./assets/PalesBird.png" alt="Donate">
             </div>   
       </div>
       
@@ -1045,6 +1074,21 @@
           <button id="arcade-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
 
+       <div id="sittight-screen" style="display: none; position: relative; height: 400px;">
+          <h2 class="text-center">Sit Tight</h2>
+         <p class="text-center text-muted">Just sit tight, relax, and watch the movie, everything will be okay.</p>
+          <div id="sittight-video" class="d-flex" style="position: relative; height: 300px; margin-top: 1rem;">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/XAZkc9Uxefk?si=uzqylkB9r_si11Ca" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          </div>
+        <button id="sittight-close" class="btn btn-outline-light ms-2" style="position: relative; margin-top: 4rem;">Back</button>
+        </div>
+
+        <div id="flores-screen" style="display: none;">
+         <h2 class="text-center">Flores</h2>
+         <p class="text-center text-muted">Coming soon!</p>
+          <button id="flores-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+        </div>
+
        <div id="aboutscreen" style="display: none;">
          <h2 class="text-center">About me</h2>
          <p class="text-center text-muted">I built this platform with love and patience, I only spent $20 from my pocket for this project, I am not a rich man, I and my tech-works I developed are still less than perfect, I work alone for this, man!.. I care about all of you, I care about myself, trying to race with my fate, but I am still living in this cage, I just don't want to drown in the lake...</p>
@@ -1090,6 +1134,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const bangorinasLogo = document.getElementById('welcome-logo');
       const freePalestineScreen = document.getElementById('FreePalestine');
       const aboutScreen = document.getElementById('aboutscreen');
+      const sittightScreen = document.getElementById('sittight-screen');
+      const floresScreen = document.getElementById('flores-screen');
 
       const bangorBtn = document.getElementById('btn-bangorinas');
       const microBtn = document.getElementById('btn-micro');
@@ -1133,6 +1179,10 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
       const threePedalsBtn = document.getElementById('3-pedals');
       const bigLBtn = document.getElementById('big-l');
       const UfoBtn = document.getElementById('Ufo-run');
+      const sittightBtn = document.getElementById('sittight');
+      const sittightCloseBtn = document.getElementById('sittight-close');
+      const floresBtn = document.getElementById('flores');
+      const floresCloseBtn = document.getElementById('flores-close');
 
       function showOverlay() {
         if (!overlay) return;
@@ -1159,6 +1209,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
 
       function showWelcome() {
@@ -1175,6 +1227,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
 
       function showAI() {
@@ -1190,6 +1244,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         bangorinasLogo.style.display = '';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
 
       function showMicro() {
@@ -1207,6 +1263,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
       function showPaypal() {
         if (!paypalScreen) return;
@@ -1222,6 +1280,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
       function showContact() {
         if (!contactScreen) return;
@@ -1237,6 +1297,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
       function showArcade() {
         if (!arcadeScreen) return;
@@ -1252,6 +1314,8 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
       function showPaper() {
         if (!paperScreen) return;
@@ -1267,12 +1331,52 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
       }
 
       function showAbout() {
         if (!aboutScreen) return;
         aboutScreen.style.display = '';
         bangorinasLogo.style.display = '';
+        paperScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        sittightScreen.style.display = 'none';
+        floresScreen.style.display = 'none';
+      }
+
+      function showSittight() {
+        if (!sittightScreen) return;
+        sittightScreen.style.display = '';
+        bangorinasLogo.style.display = '';
+        aboutScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        floresScreen.style.display = 'none';
+      }
+
+      function showFlores() {
+        if (!floresScreen) return;
+        floresScreen.style.display = '';
+        bangorinasLogo.style.display = '';
+        sittightScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
         paperScreen.style.display = 'none';
         microScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
@@ -1509,6 +1613,27 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
         });
       }
 
+      if (sittightBtn) {
+        sittightBtn.addEventListener('click', function () {
+          showSittight();
+        });
+      }
+      if (sittightCloseBtn) {
+        sittightCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+      if (floresBtn) {
+        floresBtn.addEventListener('click', function () {
+          showFlores();
+        });
+      }
+      if (floresCloseBtn) {
+        floresCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
     })();
   </script>
    <script>
@@ -1546,5 +1671,4 @@ As you can see, even a fool of a parliament can have big ammount of royalties...
 
 </body>
 </html>
-
 
