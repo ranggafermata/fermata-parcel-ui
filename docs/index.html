@@ -531,7 +531,6 @@
     #side-info-ai:hover,
     #side-info-defense:hover,
     #side-info-paper:hover {
-      transition-delay: 1s;
         animation: leftIn .25s ease-out; 
         opacity: 1;
     }
@@ -663,9 +662,19 @@
 
       }
       #spotify-embed:hover {
-        transition-delay: 1s;
         animation: leftIn .25s ease-out; 
         opacity: 1;
+      }
+
+      #spotify-close {
+        position: absolute;
+        top: -65px;
+        right: 250px;
+        border: none;
+      }
+
+      #spotify-close:hover {
+        transform: scale(1.2);
       }
 
       #docs {
@@ -685,10 +694,10 @@
 
 
   
-  <div id="welcome-splash-overlay" role="dialog" aria-modal="true" aria-label="Front door to Bangorinas" >
+  <div id="welcome-splash-overlay" aria-modal="true" aria-label="Front door to Bangorinas"  >
     
 
-    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center shadow-sm" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; backdrop-filter: blur(20px);">
+    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center shadow-sm" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; backdrop-filter: blur(20px); overflow-x: auto; overflow-wrap: anywhere;">
      <div id="side-info-footer-1" class="actions" style="justify-content: center;">
       <div id="information" class="btn">
           <img src="./assets/Infobang.png" alt="Information">
@@ -717,12 +726,12 @@
     </header>
 
 
-    <div id="welcome-splash">
+    <div id="welcome-splash" >
       <!-- Screen 1: front door -->
       <div id="welcome-screen">
         <h2 class="text-center">Welcome</h2>
         <p class="text-center text-muted">Say less. This platform, is your home.</p>
-        <div class="actions" style="justify-content: space-between; overflow-x: auto;">
+        <div class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
           <img id="btn-bangorinas"src="./assets/bangai.png" class="btn shadow-sm" role="button" >
           <img id="btn-micro" src="./assets/bangfense.png" class="btn shadow-sm" role="button" >
           <img id="btn-mp" src="./assets/bangaiMP.png" class="btn shadow-sm" role="button" >
@@ -892,10 +901,12 @@
 
      
       <div id="spotify-embed">
+        <img src="./assets/spotifyclose.png" id="spotify-close" class="btn ms-2">
         <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="400" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
-      <footer class="text-center py-3 small  text-muted" style="position: absolute; bottom: 0; width: 100%;">
-        © <span id="year" ></span> Bangorinas 2.1.0 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+
+      <footer class="text-center py-3 small  text-muted " style="position: absolute; bottom: 0; width: 100%;">
+        © <span id="year" ></span> Bangorinas 2.1.2 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
   </div>
@@ -918,6 +929,7 @@
       const freePalestineScreen = document.getElementById('FreePalestine');
       const aboutScreen = document.getElementById('aboutscreen');
       const dinoScreen = document.getElementById('DinoGame');
+      const SpotifyPlayer = document.getElementById('spotify-embed');
      
       
       
@@ -967,6 +979,7 @@
       const dinoBtn = document.getElementById('DinoBtn');
       const dinoCloseBtn = document.getElementById('dino-close');
       const musicproductionBtn = document.getElementById('btn-mp');
+      const spotifyclosebtn = document.getElementById('spotify-close');
      
      
     
@@ -1171,7 +1184,10 @@
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
        
-        
+      }
+      function hideSpotify() {
+        if (!SpotifyPlayer) return;
+        SpotifyPlayer.style.display = 'none';
       }
 
 
@@ -1416,9 +1432,9 @@
         });
       }
 
-      if (mpCloseBtn) {
-        mpCloseBtn.addEventListener('click', function () {
-          showWelcome();
+      if (spotifyclosebtn) {
+        spotifyclosebtn.addEventListener('click', function () {
+          hideSpotify();
         });
       }
 
@@ -1427,6 +1443,4 @@
 
 </body>
 </html>
-
-
 
