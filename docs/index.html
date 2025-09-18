@@ -38,34 +38,7 @@
       position: relative;
       overflow: hidden;
     }
-    #response-box {
-      position: absolute;
-      transform: translateY(-25px);
-      overflow-y: auto;
-      display: none;
-      flex-direction: column;
-      padding: 1rem; 
-      overflow-y: auto;
-      padding-bottom: 150px;
-      transition: opacity 0.4s ease;
-    }
-    #hello-text {
-      font-family: 'Noto Sans', sans-serif; /* Use your custom font! */
-      font-size: 2rem; /* Adjust size as needed */
-      font-weight: lighter;
-      position: absolute;
-      transform: translateY(-40px);
-      overflow: hidden; /* Ensures the text is not visible until the animation reveals it */
-      border-right: .15em solid rgb(83, 83, 83); /* This is the typewriter cursor */
-      white-space: nowrap; /* Keeps the text on a single line */
-      margin: 0 auto; /* Centers the element */
-      max-width: 200px;
-      letter-spacing: .10em; /* Adjust as needed */
-      animation:
-        typing 2.5s steps(6, end), /* The typing animation */
-        blink-caret .75s step-end infinite; /* The blinking cursor animation */
-      
-    }
+    
 
     /* The typing effect */
     @keyframes typing {
@@ -89,87 +62,7 @@
       background-position: center;
       color: white;
     }
-    #chat-form {
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-      transform: translateY(80px);
-      transition: transform 0.5s ease-in-out;
-      padding: 1rem 1.5rem 1.5rem 1.5rem;
-      width: 100%;
-      max-width: 880px;
-    }
-    /* This class will be added by JavaScript */
-    main.chat-active #hello-text {
-      opacity: 0;
-      display: none;
-    }
-
-    main.chat-active #response-box {
-      display: flex; /* Show the response box */
-    }
-
-    main.chat-active #chat-form {
-      /* Animate the form to the bottom of the screen */
-      transform: translateY(330px);
-    }
-    #chat-form.active {
-      translate: translateY(100px);
-    }
-    .chat-input-group {
-      background-color: rgba(54, 54, 54, 0.9);
-      border-radius: 1rem;
-      padding: 0.5rem 1rem;
-    }
-    #chat-input {
-      background: transparent;
-      border: none;
-      color: white;
-      resize: none;
-      overflow-wrap: break-word;
-      word-break: break-word;
-      white-space: pre-wrap;
-      max-height: 120px; /* Set a maximum height before scrolling starts */
-      overflow-y: auto;  /* Show scrollbar only when needed */
-    }
-    #chat-input:focus {
-      outline: none;
-      box-shadow: none;
-    }
-    .chat-bubble {
-      max-width: 90%;
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.5rem;
-      border-radius: 1rem;
-      animation: fadeInUp 0.3s ease-out;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-      white-space: pre-wrap;
-    }
-    .chat-bubble.user {
-      background-color: #444;
-      align-self: flex-end;
-    }
-    .chat-bubble.bot {
-      align-self: flex-start;
-    }
-
-    /* --- Code Block and Copy Button Styles --- */
-    .code-block-wrapper {
-      background-color: #1e1e1e; /* A slightly different dark shade */
-      border-radius: 0.75rem;
-      margin: 0.5rem 0;
-      border: 1px solid #444;
-    }
-
-    /* We style the <pre> tag that Prism uses */
-    pre[class*="language-"] {
-      background: transparent !important; /* Override Prism's default background */
-      padding: 1rem;
-      margin: 0 !important; /* Override Prism's default margin */
-      border-radius: 0 0 0.75rem 0.75rem;
-      font-size: 0.9em;
-    }
+  
 
     /* This is the header for the code block */
     .code-block-header {
@@ -220,114 +113,6 @@
       }
     }
 
-    #chat-history {
-      overflow-y: auto;
-      max-height: 700px;
-      height: 100%;
-      padding: 0 10px;
-      padding-right: 10px;
-    }
-    #chat-history li {
-      padding: 12px 10px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: 1px solid transparent; /* Prevents layout shift on hover */
-      transition: background-color 0.2s ease, transform 0.2s ease;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: space-between; /* Pushes icons to the right */
-    }
-    #chat-history li:nth-child(even) {
-      background-color: #1c1c1c9f; /* Lighter background for even items */
-      opacity: 0.8;
-    }
-    #chat-history li:nth-child(odd) {
-      background-color: #2c2c2c80; /* Darker background for odd items */
-      opacity: 0.8;
-    }
-    #chat-history li:hover .history-item-actions {
-      display: flex;
-    }
-    #chat-history li:hover {
-      background-color: #3a3a3a; /* Darker background on hover */
-      transform: scale(1.02); /* Slightly enlarge the item on hover */
-    }
-    #chat-history li:active {
-      background-color: #4a4a4a;
-      transform: scale(0.98); /* Makes the item shrink slightly on click */
-    }
-
-    .history-item-actions {
-      display: none; /* Hidden by default */
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(50%);
-      gap: 5px;
-    }
-
-    .history-item-actions button {
-      background: transparent;
-      border: none;
-      color: inherit;
-      padding: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 34px;
-      height: 28px;
-      border-radius: 6px;
-    }
-    .history-item-actions button:focus {
-      outline: 2px solid rgba(255,255,255,0.12);
-    }
-
-     .history-item-actions .editBtn,
-     .history-item-actions .deleteBtn {
-       cursor: pointer;
-       opacity: 0.7;
-       transition: opacity 0.2s;
-     }
- 
-     .history-item-actions .editBtn:hover,
-     .history-item-actions .deleteBtn:hover {
-       opacity: 1;
-     }
- 
-    .editBtn {
-      display: flex;
-      align-items: center;
-      background-image: url('./assets/edit.png');
-      background-size: 16px 16px;
-      background-repeat: no-repeat;
-      background-position: center;
-      padding-left: 20px;
-      gap: 5px;
-    }
-
-    .deleteBtn {
-      display: flex;
-      align-items: center;
-      background-image: url('./assets/delete.png');
-      background-size: 16px 16px;
-      background-repeat: no-repeat;
-      background-position: center;
-      padding-left: 20px;
-      gap: 5px;
-    }
-    
-
-    
-    /* Style for the text part of the list item */
-    .history-item-title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      padding-right: 60px; /* Make space for the icons */
-      width: 100%;
-    }
 
     #sidebar {
       position: fixed;
@@ -442,19 +227,7 @@
     #sidebar.active #logo {
       right: -240px;
     }
-    #authNotice {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: rgba(0,0,0,0.85);
-      border: 1px solid #ccc;
-      padding: 1rem 1.5rem;
-      border-radius: 0.5rem;
-      color: white;
-      z-index: 2000;
-      display: none;
-    }
+   
     .typing-dots {
       display: inline-block;
       font-size: 1.2rem;
@@ -557,29 +330,22 @@
       align-items: center;
       justify-content: center;
       z-index: 3000;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
       padding: 1rem;
       animation: fadeIn .25s ease-out;
     }
    
 
-    #welcome-logo {
-      position: absolute;
-      align-items: center;
-      top: 140px;
-      z-index: 1000;
-    }
-
+   
     #welcome-splash {
       /* background: linear-gradient(180deg, #14141405 10%, #29282815 90%); */
+      position: relative;
       color: #fff;
       border-radius: 12px;
       padding: 22px;
-      max-width: 800px;
+      max-width: 1000px;
       width: 100%;
       /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
-      text-align: left;
+      
       transform: translateY(0);
     }
 
@@ -587,9 +353,10 @@
     #effortConfirmation {
       /* background: linear-gradient(180deg, #14141405 10%, #29282815 90%); */
       position: absolute;
+
       border-radius: 12px;
       padding: 26px;
-      max-width: 800px;
+      max-width: 1000px;
       width: 100%;
       /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
       text-align: center;
@@ -601,13 +368,28 @@
     }
 
     #micro-screen,
+    #welcome-screen,
     #FreePalestine,
     #paper-screen,
     #ai-screen,
-    #aboutscreen {
+    #aboutscreen,
+    #paypal-screen,
+    #musicproduction-screen{
       animation: fadeIn .25s ease-out;
     }
     
+    #DinoScreen {
+      animation: fadeIn .25s ease-out;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%; /* Make it full viewport height */
+    }
+
+    #musicPlayer {
+      position: absolute;
+    
+    }
 
     #welcome-splash h2 {
       margin: 0 0 8px 0;
@@ -636,23 +418,68 @@
       to { opacity: 1; transform: translateY(0); }
     }
     #btn-bangorinas,
-    #btn-micro {
+    #btn-micro,
+    #btn-mp,
+    #effort-btn,
+    #endeavor-btn,
+    #ae1-btn,
+    #ae2-btn,
+    #paper1-btn,
+    #paper2-btn,
+    #paper3-btn,
+    #paper4-btn,
+    #three-pedals,
+    #big-l,
+    #Ufo-run,
+    #PalesBtn,
+    #bm-btn,
+    #rf-btn,
+    #nms-btn {
       transform: scale(0.8);
       transition: transform 0.2s ease;
       border: none;
     }
     #btn-bangorinas:hover,
-    #btn-micro:hover {
+    #btn-micro:hover,
+    #btn-mp:hover,
+    #effort-btn:hover,
+    #endeavor-btn:hover,
+    #ae1-btn:hover,
+    #ae2-btn:hover,
+    #paper1-btn:hover,
+    #paper2-btn:hover,
+    #paper3-btn:hover,
+    #paper4-btn:hover,
+    #three-pedals:hover,
+    #big-l:hover,
+    #Ufo-run:hover,
+    #PalesBtn:hover,
+    #bm-btn:hover,
+    #rf-btn:hover,
+    #nms-btn:hover  {
       transform: scale(0.9);
-      background-color: #41424221;
       outline: none;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-      filter: brightness(1.3);
     }
 
     #btn-bangorinas:active,
-    #btn-micro:active {
-      transform: scale(0.8);
+    #btn-micro:active,
+    #btn-mp:active,
+    #effort-btn:active,
+    #endeavor-btn:active,
+    #ae1-btn:active,
+    #ae2-btn:active,
+    #paper1-btn:active,
+    #paper2-btn:active,
+    #paper3-btn:active,
+    #paper4-btn:active,
+    #three-pedals:active,
+    #big-l:active,
+    #Ufo-run:active,
+    #PalesBtn:active,
+    #bm-btn:active,
+    #rf-btn:active,
+    #nms-btn:active  {
+      transform: scale(0.6);
     }
 
     #side-info,
@@ -661,7 +488,7 @@
     #side-info-paper {
       position: absolute;
       top: -100px;
-      left: -530px;
+      left: -435px;
       height: 100%; /* Make it full viewport height */
       width: 310px;
       padding: 1rem;
@@ -672,19 +499,34 @@
       flex-direction: column;
     }
 
-    #game-sider{
-      position: absolute;
-      top: -100px;
-      left: -530px;
-      height: 100%; /* Make it full viewport height */
-      width: 310px;
+    #DinoGame{
+      position: fixed;
+      justify-content: center;
+      align-items: center;
+      top: -250px;
+      height: 50vh; /* Make it full viewport height */
+      width:40vw;
       padding: 1rem;
-      z-index: 1050;
-      cursor: pointer;
-      display: flex; /* Make it a flex container by default */
-      flex-direction: column;
+
+      margin: auto; 
+      border-radius: 12px; 
+      overflow: hidden; 
+      
     }
 
+   #DinoBtn,
+   #dino-close {
+      transform: scale(1.0);
+      transition: transform 0.2s ease;
+      border: none;
+    }
+    
+    #DinoBtn:hover,
+    #dino-close:hover {
+      transform: scale(1.2);
+      outline: none;
+    }
+    
     #side-info:hover,
     #side-info-ai:hover,
     #side-info-defense:hover,
@@ -694,10 +536,6 @@
         opacity: 1;
     }
 
-
-    #side-info-header {
-      margin-bottom: 1rem;
-    }
 
 
     #side-info-footer {
@@ -756,34 +594,25 @@
       }
 
       #contact,
+      #Palestine,
       #btn-paper {
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
       }
-      
-      #Palestine {
-        transform: scale(0.8);
-        transition: transform 0.2s ease;
-        border: none;
-      }
 
-      #Palestine:hover {
-        opacity: 1;
-        transform: scale(1.2);
-        background-image: url("./assets/PalesLogo.png");
-        background-size: contain;
-        background-repeat: no-repeat;
-      }
-
-      #contact:hover {
+      #contact:hover,
+      #Palestine:hover,
+      #btn-paper:hover {
         transform: scale(1.0);
         opacity: 1.0;
       }
 
       #contact:active,
-      #Palestine:active {
-        transform: scale(1.0);
+      #Palestine:active,
+      #btn-paper:active,
+      #information:active {
+        transform: scale(0.8);
         
       }
 
@@ -791,18 +620,11 @@
         animation: fadeIn .25s ease-out;
       }
 
-      #information,
-      #btn-paper {
-        opacity: 40%;
+      #information {
         transition: transform 0.2s ease;
         border: none;
       }
-      #information:hover,
-      #btn-paper:hover {
-        opacity: 100%;
-      }
   
-
       #play {
         transform: scale(0.8);
         transition: transform 0.2s ease;
@@ -829,7 +651,7 @@
       #spotify-embed {
          position: absolute;
           top: 210px;
-          right: 0px;
+          right: 10px;
           height: 65%; /* Make it full viewport height */
           width: 310px;
           padding: 1rem;
@@ -851,6 +673,8 @@
         margin-top: 1rem;
         display: flex;
       }
+      
+
 
 </style>
 
@@ -861,57 +685,53 @@
 
 
   
-  <div id="welcome-splash-overlay" role="dialog" aria-modal="true" aria-label="Front door to Bangorinas">
+  <div id="welcome-splash-overlay" role="dialog" aria-modal="true" aria-label="Front door to Bangorinas" >
     
 
-    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; background-color: #ffffff02;">
+    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center shadow-sm" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; backdrop-filter: blur(20px);">
      <div id="side-info-footer-1" class="actions" style="justify-content: center;">
       <div id="information" class="btn">
           <img src="./assets/information.png" alt="Information">
         </div> 
-      <div id="btn-paper" class="btn">
-          <img src="./assets/Papers.png" alt="Papers">
-        </div>
+      
       </div>
-      <div id="side-info-footer" class="actions" style="justify-content: center;">
-        
+      <div id="side-info-footer" class="actions" style="justify-content: space-between;">
         <div id="play" class="btn">
               <img src="./assets/playanimated.gif" alt="play">
             </div>
-
              <div id="contact" class="btn">
           <img src="./assets/contact.png" alt="Contact">
         </div>
         <div id="donate-btn" class="btn">
           <img src="./assets/donate1.png" alt="Donate">
             </div>
+            <div id="btn-paper" class="btn">
+          <img src="./assets/Papers.png" alt="Papers">
+        </div>
+        <div id="Palestine" class="btn" style="margin-left: 2rem;">
+          <img src="./assets/PalesLogo.png" alt="Donate">
+        </div>
          
       </div>
       
     </header>
 
-    <div id="welcome-logo">
-        <img class="align-items-center" src="./assets/Bangorinas Logo.png"  style="width: 80px; height: 80px;"   alt="Bangorinas Logo">
-    </div>
 
-     <div id="loading">
-        <img class="align-items-center" src="./assets/WelcomeBang.gif"  style="width: 100%; height: 100%;"   alt="Bangorinas Logo">
-    </div>
-
-    <div id="welcome-splash" class="shadow-sm">
+    <div id="welcome-splash">
       <!-- Screen 1: front door -->
       <div id="welcome-screen">
-        <h2 class="text-center">Bangorinas</h2>
-        <p class="text-center text-muted">Feel free to explore!</p>
-        <div class="actions" style="justify-content: center;">
-          <img id="btn-bangorinas"src="./assets/bangai.png" class="btn opacity-80" >
-          <img id="btn-micro" src="./assets/bangfense.png" class="btn opacity-80" >
+        <h2 class="text-center">Welcome</h2>
+        <p class="text-center text-muted">Say less. This platform, is your home.</p>
+        <div class="actions" style="justify-content: space-between; overflow-x: auto;">
+          <img id="btn-bangorinas"src="./assets/bangai.png" class="btn shadow-sm" role="button" >
+          <img id="btn-micro" src="./assets/bangfense.png" class="btn shadow-sm" role="button" >
+          <img id="btn-mp" src="./assets/bangaiMP.png" class="btn shadow-sm" role="button" >
         </div>
         <div id="side-info" class="d-flex">
-          <div id="side-info-header" class="text-light small">
-            <h4 class="text-muted">Welcome</h4>
+          <div id="side-info-header" class="text-small">
+            <h4>Bangorinas</h4>
           </div>
-          <div id="side-info-content" class="text-light small">
+          <div id="side-info-content" class="text-light small py-2">
             <p class="text-muted">In this Bangorinas platform, you can use AI assistant, utilize micro-defenses, and access various papers, even you can PLAY! some mini-games</p>
             <p class="text-muted">Pada pelantar Bangorinas ini, Anda dapat menggunakan asisten AI, memanfaatkan micro-defense, dan mengakses berbagai dokumen, bahkan Anda dapat PLAY! beberapa mini-game</p>
             <p class="text-muted">En esta plataforma de Bangorinas, puedes chatear con un asistente de IA, utilizar micro-defensas y acceder a varios documentos, ¡incluso puedes PLAY! algunos mini-juegos</p>
@@ -926,9 +746,9 @@
        <div id="ai-screen" style="display:none;">
         <h2 class="text-center">Artifical Intelligence</h2>
         <p class="text-center text-muted">I recommend using the Effort model first, is a great way to get started.</p>
-        <div class="actions" style="justify-content: center;">
-          <img src="./assets/Effort-AI.gif" id="effort-btn" class="btn btn-outline-dark border-0" role="button" alt="Effort-AI">
-          <img src="./assets/Endeavor-AI.gif" id="endeavor-btn" class="btn btn-outline-dark border-0" role="button" alt="Endeavor-AI">
+        <div class="actions" style="justify-content: center; overflow-x: auto;">
+          <img src="./assets/Effort-AI.gif" id="effort-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Effort-AI">
+          <img src="./assets/Endeavor-AI.gif" id="endeavor-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Endeavor-AI">
         </div>
         <button id="ai-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
         <button id="docs" class="btn btn-outline-light ms-2">Documentation/Manual Installation</button>
@@ -945,18 +765,18 @@
 
         <div id="side-info-ai" class="d-flex">
           <div id="side-info-header" class="text-light small">
-            <h4 class="text-muted">AI</h4>
+            <h4>AI</h4>
           </div>
-          <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Effort 1</h6>
+          <div id="side-info-content" class="text-light small py-2">
+            <h6>Effort 1</h6>
             <p class="text-muted">Effort is a small and lightweight on-device text-text only AI application, it performs well on both CPU and GPU, this generalist model is designed for a general understanding of language, good for any daily task purposes, general text generation, and basic programming.</p>
           </div>
           <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Endeavor 1</h6>
+            <h6>Endeavor 1</h6>
             <p class="text-muted">Endeavor is an on-device text-text only AI application with higher precision, making this model more powerful & versatile model and larger in size, designed for a wide range of tasks, making it a great choice for users with access to more resources. This model is quite CPU-friendly, but I recommend you using this model with any GPU you have for better performance.</p>
           </div>
           <div id="side-info-content" class="text-light small">
-            <h5 class="text-muted">Both models are designed to run locally on your device, ensuring your data remains private and secure. No internet connection is required, making them ideal for offline use.</h5>
+            <h5>Both models are designed to run locally on your device, ensuring your data remains private and secure. No internet connection is required, making them ideal for offline use.</h5>
           </div>
         </div>
       </div>
@@ -965,41 +785,40 @@
       <div id="micro-screen" style="display:none;">
         <h2 class="text-center">Micro-Defense</h2>
         <p class="text-center text-muted">Hey, agent 23... come in... over.</p>
-        <div class="actions" style="justify-content: center;">
-          <img src="./assets/angeleye1.png" id="ae1-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 1">
-          <img src="./assets/angeleye2.png" id="ae2-btn" class="btn btn-outline-dark border-0" role="button" alt="AE 2">
+        <div class="actions" style="justify-content: center; overflow-x: auto;">
+          <img src="./assets/angeleye1.png" id="ae1-btn" role="button" alt="AE 1">
+          <img src="./assets/angeleye2.png" id="ae2-btn" role="button" alt="AE 2">
         </div>
          <div id="side-info-defense" class="d-flex">
           <div id="side-info-header" class="text-light small">
-            <h4 class="text-muted">Micro-Defense</h4>
+            <h4>Micro-Defense</h4>
           </div>
-        <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Angel's Eye 1</h6>
+        <div id="side-info-content" class="text-light small py-2">
+            <h6>Angel's Eye 1</h6>
             <p class="text-muted">Angel's Eye 1 (AE 1) is a fully integrated AI-powered threat intelligence tool. With this web-based security app, you can identify, analyze, and investigate any vulnerabilities and potential threats.</p>
           </div>
           <div id="side-info-content" class="text-light small">
-            <h6 class="text-muted">Angel's Eye 2 (preview)</h6>
+            <h6>Angel's Eye 2 (preview)</h6>
             <p class="text-muted">Angel's Eye 2 or AE 2 (preview) is an orbital version of the threat intelligence tool, offering enhanced features and capabilities for identifying and mitigating potential threats in satellite communications, including advanced anomaly detection and real-time monitoring. In the future updates, I will integrate it with GPS-tracking integration and sensing imagery.</p>
           </div>
           </div>
         <button id="micro-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
       </div>
 
+
       <!-- Screen 3: Paper (hidden by default) -->
       <div id="paper-screen" style="display: none;">
         <h2 class="text-center">Papers</h2>
         <p class="text-center text-muted">It's reading time! Grab your favorite paper and dive in.</p>
-        <div class="actions" style="justify-content: center;">
-          <img src="./assets/paper1.png" id="paper1-btn"  class="btn btn-outline-dark border-0" role="button" alt="Paper Type 1">
-          <img src="./assets/paper2.png" id="paper2-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 2">
-          <img src="./assets/paper3.png" id="paper3-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 3">
-          <img src="./assets/paper4.png" id="paper4-btn" class="btn btn-outline-dark border-0" role="button" alt="Paper Type 4">
+        <div class="actions" style="justify-content: space-between; overflow-x: auto;">
+          <img src="./assets/paper1.png" id="paper1-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 1">
+          <img src="./assets/paper2.png" id="paper2-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 2">
+          <img src="./assets/paper3.png" id="paper3-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 3">
+          <img src="./assets/paper4.png" id="paper4-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 4">
         </div>
         <div id="side-info-paper" class="d-flex">
           <div id="side-info-header" class="text-light small">
-            <h4 class="text-muted">Papers</h4>
-          </div>
-        <div id="side-info-content" class="text-light small">
+            <h4>Papers</h4>
             <p class="text-muted">You can access my research papers and articles. If you want to see more the specific topics or papers, you can go to https://isbi.academia.edu/RanggaFermata</p>
           </div>
           </div>
@@ -1010,18 +829,15 @@
         <h2 class="text-center">Free Palestine!</h2>
         <p class="text-center text-muted">Free... Free... Palestine!!!</p>
         <div class="actions" style="justify-content: center;">
-          <img src="./assets/PalesFlag.png"  id="PalesBtn" class="btn btn-outline-dark border-0" alt="FreePalestine">
+          <img src="./assets/PalesFlag.png"  id="PalesBtn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" alt="FreePalestine">
         </div>
         <button id="FreePalestine-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
       </div>
 
       <!-- Screen 4: Paypal (hidden by default) -->
-       <div id="paypal-screen" style="display: none;">
+       <div id="paypal-screen" style="display: none;" class="text-muted">
           <div id="paypal-container-E968U4FQBYDYE"></div>
-          <button id="paypal-back" class="btn btn-outline-light ms-2">Back</button>
-          <button id="Palestine" class="btn" style="margin-left: 2rem;">
-          <img src="./assets/PalesBird.png" alt="Donate">
-          </button>
+          <button id="paypal-back" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
           <script>
             paypal.HostedButtons({
               hostedButtonId: "E968U4FQBYDYE",
@@ -1030,7 +846,7 @@
       </div>
 
       <!-- Screen 5: contact (hidden by default) -->
-       <div id="contact-screen" style="display: none;">
+       <div id="contact-screen"  style="display: none;">
          <h2 class="text-center">Contact me</h2>
          <p class="text-center text-muted">If you have any questions or feedback, feel free to reach out!</p>
          <div class="actions" style="justify-content: center;">
@@ -1045,25 +861,29 @@
        </div>
 
        <!-- Screen 5: Arcade games (hidden by default) -->
-       <div id="arcade-screen" style="display: none;">
+       <div id="arcade-screen" style="display: none; ">
          <h2 class="text-center">Play!</h2>
          <p class="text-center text-muted">Get ready to play some classic arcade games!</p>
-         <div class="actions" style="justify-content: center;">
-           <img src="./assets/AdventureCar.png" id="3-pedals" class="btn btn-outline-dark border-0" role="button">
-           <img src="./assets/BigL.png" id="big-l" class="btn btn-outline-dark border-0" role="button">
-           <img src="./assets/UfoFighter.png" id="Ufo-run" class="btn btn-outline-dark border-0" role="button">
-          </div>
-          <div id="game-sider" class="d-flex">
-          <iframe src="https://chromedino.com/color/" frameborder="0" scrolling="no" width="60%" height="80%" loading="lazy"></iframe>
-          <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
-          </div>
+          <div class="actions" style="justify-content: center; overflow-x: auto;">
+            <img src="./assets/AdventureCar.png" id="three-pedals" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
+            <img src="./assets/BigL.png" id="big-l" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
+            <img src="./assets/UfoFighter.png" id="Ufo-run" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
+            </div>
           <button id="arcade-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+          <img id="DinoBtn" src="./assets/DinoGame.png" class="btn ms-2" style="margin-top: 2rem;">
        </div>
 
-       <div id="aboutscreen" style="display: none;">
+       <div id="DinoGame" style="display: none;">
+          <img src="./assets/dinoBack.png" id="dino-close" class="btn ms-2" style="margin-top: 2rem; border: none;">
+          <iframe src="https://chromedino.com/color/" frameborder="0" scrolling="yes" width="80%" height="100%" loading="lazy"></iframe>
+          <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
+       </div>
+
+
+       <div id="aboutscreen" class="shadow-sm" style="display: none;">
          <h2 class="text-center">About me</h2>
          <p class="text-center text-muted">Hey there!</p>
-         <p class="text-center text-muted">I am an Indonesian Security Software Engineer with extensive experience in full-stack web development, AI application creation, cybersecurity research, cultural anthropologist, and music producer/composer of Dutch descent.</p>
+         <p class="text-center text-muted">I am an Indonesian Security Software Engineer of Dutch descent with extensive experience in full-stack web development, AI application creation, cybersecurity research, cultural anthropology, and music production/composition.</p>
          <p class="text-center text-muted">So, please.. feel free to use all the features here! If you want to support me, you can do so by sharing this project with others or by making a small donation. Every little bit helps!</p>
          <button id="about-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
@@ -1074,8 +894,8 @@
       <div id="spotify-embed">
         <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="400" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
       </div>
-      <footer class="text-center text-muted py-3 small" style="position: absolute; bottom: 0; width: 100%; background-color: #ffffff02;">
-        © <span id="year"></span> Bangorinas 1.8.0 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+      <footer class="text-center py-3 small  text-muted" style="position: absolute; bottom: 0; width: 100%;">
+        © <span id="year" ></span> Bangorinas 2.1.0 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
   </div>
@@ -1095,9 +915,11 @@
       const paypalScreen = document.getElementById('paypal-screen');
       const contactScreen = document.getElementById('contact-screen');
       const paperScreen = document.getElementById('paper-screen');
-      const bangorinasLogo = document.getElementById('welcome-logo');
       const freePalestineScreen = document.getElementById('FreePalestine');
       const aboutScreen = document.getElementById('aboutscreen');
+      const dinoScreen = document.getElementById('DinoGame');
+     
+      
       
 
       const bangorBtn = document.getElementById('btn-bangorinas');
@@ -1142,6 +964,10 @@
       const threePedalsBtn = document.getElementById('3-pedals');
       const bigLBtn = document.getElementById('big-l');
       const UfoBtn = document.getElementById('Ufo-run');
+      const dinoBtn = document.getElementById('DinoBtn');
+      const dinoCloseBtn = document.getElementById('dino-close');
+      const musicproductionBtn = document.getElementById('btn-mp');
+     
      
     
 
@@ -1159,7 +985,6 @@
       function showPalestine() {
         if (!freePalestineScreen) return;
         freePalestineScreen.style.display = '';
-        bangorinasLogo.style.display = '';
         welcomeScreen.style.display = 'none';
         microScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
@@ -1170,6 +995,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+    
        
         
       }
@@ -1177,7 +1004,6 @@
       function showWelcome() {
         if (!welcomeScreen) return;
         welcomeScreen.style.display = '';
-        bangorinasLogo.style.display = '';
         microScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
@@ -1188,6 +1014,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+       
        
         
       }
@@ -1196,24 +1024,25 @@
         if (!aiScreen) return;
         aiScreen.style.display = '';
         welcomeScreen.style.display = 'none';
-        bangorinasLogo.style.display = 'none';
+       
         microScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
-        bangorinasLogo.style.display = '';
+       
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
-       
-        
+        dinoScreen.style.display = 'none';
+     
+
       }
 
       function showMicro() {
         if (!microScreen) return;
         microScreen.style.display = '';
         welcomeScreen.style.display = 'none';
-        bangorinasLogo.style.display = '';
+      
         microScreen.style.display = '';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
@@ -1224,6 +1053,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+   
         
        
       }
@@ -1235,12 +1066,14 @@
         contactScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
-        bangorinasLogo.style.display = 'none';
+        
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+       
         
         
       }
@@ -1252,19 +1085,21 @@
         paypalScreen.style.display = 'none';
         arcadeScreen.style.display = 'none';
         paperScreen.style.display = 'none';
-        bangorinasLogo.style.display = 'none';
+      
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+        
        
         
       }
       function showArcade() {
         if (!arcadeScreen) return;
         arcadeScreen.style.display = '';
-        bangorinasLogo.style.display = '';
+  
         contactScreen.style.display = 'none';
         microScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
@@ -1275,12 +1110,14 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+        
         
         
       }
       function showPaper() {
         if (!paperScreen) return;
-        bangorinasLogo.style.display = '';
+   
         paperScreen.style.display = '';
         microScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
@@ -1292,14 +1129,37 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-       
+        dinoScreen.style.display = 'none';
+        
         
       }
 
       function showAbout() {
         if (!aboutScreen) return;
         aboutScreen.style.display = '';
-        bangorinasLogo.style.display = '';
+     
+        paperScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        arcadeScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        dinoScreen.style.display = 'none';
+      
+       
+        
+      }
+
+
+      function showDino() {
+        if (!dinoScreen) return;
+        dinoScreen.style.display = '';
+     
+        aboutScreen.style.display = 'none';
         paperScreen.style.display = 'none';
         microScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
@@ -1313,7 +1173,6 @@
        
         
       }
-
 
 
       document.addEventListener('DOMContentLoaded', function () {
@@ -1539,38 +1398,30 @@
         });
       }
 
-    })();
-  </script>
-   <script>
-    // Show overlay as a short loading screen and fade out smoothly
-    (function () {
-      const loadingScreen = document.getElementById('loading');
-      if (!loadingScreen) return;
-
-      // Make visible (display + trigger CSS transition)
-      loadingScreen.style.display = 'flex';
-      
-      
-      // Allow layout to apply then set opacity -> transition will run
-      requestAnimationFrame(() => {
-        loadingScreen.style.visibility = 'visible';
-        loadingScreen.style.opacity = '1';
-        loadingScreen.style.pointerEvents = 'auto';
-      });
-
-      // After visible time, fade out then remove from flow after transition
-      const VISIBLE_MS = 3500;
-      setTimeout(() => {
-        loadingScreen.style.opacity = '0';
-        loadingScreen.style.pointerEvents = 'none';
-        loadingScreen.style.visibility = 'hidden';
-        loadingScreen.addEventListener('transitionend', function onEnd(e) {
-          if (e.propertyName === 'opacity') {
-            loadingScreen.style.display = 'none';
-            loadingScreen.removeEventListener('transitionend', onEnd);
-          }
+      if (dinoBtn) {
+        dinoBtn.addEventListener('click', function () {
+          showDino();
         });
-      }, VISIBLE_MS);
+      }
+
+      if (dinoCloseBtn) {
+        dinoCloseBtn.addEventListener('click', function () {
+          showArcade();
+        });
+      }
+
+      if (musicproductionBtn) {
+        musicproductionBtn.addEventListener('click', function () {
+          window.open('https://docs.google.com/presentation/d/e/2PACX-1vQ_7Hup6QRmWQ4ewTIpWaLbniWF39eyUGnyfPIy5NIqCyCrfOBLGc0ZPEOE1scY6BBtqEJKutM7SFAR/pub?start=false&loop=false&delayms=3000', '_blank', 'noopener');
+        });
+      }
+
+      if (mpCloseBtn) {
+        mpCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
     })();
   </script>
 
