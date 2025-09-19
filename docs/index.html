@@ -57,10 +57,16 @@
     }
 
     body {
-      background: linear-gradient(180deg, #161616 15%, #272727 85%);
+      position: fixed;
+      inset: 0;
+      background-image: url("./assets/nuoverlay30001.png");
       background-size: cover;
-      background-position: center;
-      color: white;
+      display: none; /* toggled by JS */
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      padding: 1rem;
+      animation: fadeIn .25s ease-out;
     }
   
 
@@ -321,18 +327,7 @@
     }
 
     /* Welcome splash styles */
-    #welcome-splash-overlay {
-      position: fixed;
-      inset: 0;
-      background-image: url("./assets/nuoverlay30001.png");
-      background-size: cover;
-      display: none; /* toggled by JS */
-      align-items: center;
-      justify-content: center;
-      z-index: 3000;
-      padding: 1rem;
-      animation: fadeIn .25s ease-out;
-    }
+    
    
 
    
@@ -693,10 +688,6 @@
 <body class="d-flex flex-column min-vh-100">
 
 
-  
-  <div id="welcome-splash-overlay" aria-modal="true" aria-label="Front door to Bangorinas"  >
-    
-
     <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center shadow-sm" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; backdrop-filter: blur(20px); overflow-x: auto; overflow-wrap: anywhere;">
      <div id="side-info-footer-1" class="actions" style="justify-content: center;">
       <div id="information" class="btn">
@@ -732,7 +723,7 @@
         <h2 class="text-center">Welcome</h2>
         <p class="text-center text-muted">Say less. This platform, is your home.</p>
         <div class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
-          <img id="btn-bangorinas"src="./assets/bangai.png" class="btn shadow-sm" role="button" >
+          <img id="btn-bangorinas" src="./assets/bangai.png" class="btn shadow-sm" >
           <img id="btn-micro" src="./assets/bangfense.png" class="btn shadow-sm" role="button" >
           <img id="btn-mp" src="./assets/bangaiMP.png" class="btn shadow-sm" role="button" >
         </div>
@@ -892,7 +883,9 @@
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
          <h2 class="text-center">About me</h2>
          <p class="text-center text-muted">Hey there!</p>
+         <p class="text-center text-muted">Let me introduce Bangorinas to you as your future place to stay, I created this platform with love and dedication, investing only $20 of my own money into this project.</p>
          <p class="text-center text-muted">I am an Indonesian Security Software Engineer of Dutch descent with extensive experience in full-stack web development, AI application creation, cybersecurity research, cultural anthropology, and music production/composition.</p>
+         <p class="text-center text-muted">Bangorinas serves as a hub or platform that offers on-device AI applications and cybersecurity tools. Additionally, you can enjoy various mini-games and access a range of other features available here. </p>
          <p class="text-center text-muted">So, please.. feel free to use all the features here! If you want to support me, you can do so by sharing this project with others or by making a small donation. Every little bit helps!</p>
          <button id="about-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
@@ -909,7 +902,7 @@
         © <span id="year" ></span> Bangorinas 2.1.2 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
-  </div>
+  
 
   <!-- Sidebar Toggle & Auth UI Logic -->
   <script>
@@ -1033,23 +1026,6 @@
         
       }
 
-      function showAI() {
-        if (!aiScreen) return;
-        aiScreen.style.display = '';
-        welcomeScreen.style.display = 'none';
-       
-        microScreen.style.display = 'none';
-        paypalScreen.style.display = 'none';
-        contactScreen.style.display = 'none';
-        arcadeScreen.style.display = 'none';
-        paperScreen.style.display = 'none';
-       
-        freePalestineScreen.style.display = 'none';
-        aboutScreen.style.display = 'none';
-        dinoScreen.style.display = 'none';
-     
-
-      }
 
       function showMicro() {
         if (!microScreen) return;
@@ -1191,15 +1167,9 @@
       }
 
 
-      document.addEventListener('DOMContentLoaded', function () {
-        if (!localStorage.getItem(KEY)) {
-          setTimeout(showOverlay, 300);
-        }
-      });
-
       // Left button: enter main site (close splash)
       if (bangorBtn) bangorBtn.addEventListener('click', function () {
-        showAI();
+        window.open('/ai');
       });
 
       if (effortBtn) effortBtn.addEventListener('click', function () {
