@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>3 Pedals - Neon Straight</title>
+    <style>
+        body { margin: 0; overflow: hidden; background: radial-gradient(ellipse at center, #081028 0%, #000814 60%); }
+        canvas { display:block }
+        #info {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            color: #08f7fe;
+            font-family: "Orbitron", monospace;
+            font-size: 18px;
+            background: rgba(2,6,16,0.35);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(8,247,254,0.12);
+            box-shadow: 0 0 24px rgba(8,247,254,0.06);
+            text-shadow: 0 0 6px rgba(0,0,0,0.8);
+        }
+        #startMessage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            color: #00ffd5;
+            font-size: 28px;
+            font-family: "Orbitron", monospace;
+            text-align:center;
+            text-shadow: 0 0 12px rgba(0,255,213,0.5);
+            background: rgba(0,0,0,0.35);
+            padding: 18px 28px;
+            border-radius: 12px;
+            cursor: wait;
+            border: 1px solid rgba(0,255,213,0.12);
+            white-space: pre; /* Allows line breaks in the text */
+        }
+        #hud {
+            position: absolute;
+            left: 12px;
+            bottom: 12px;
+            color: #ffd600;
+            font-family: "Orbitron", monospace;
+            font-size: 14px;
+            background: rgba(2,2,6,0.45);
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="info">Speed: 0 km/h</div>
+    <div id="startMessage">LOADING...</div>
+    <div id="hud">SYSTEM: ONLINE</div>
+    <canvas id="gameCanvas"></canvas>
+
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.161.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.161.0/examples/jsm/"
+        }
+    }
+    </script>
+
+    <script type="module">
+    import * as THREE from 'three';
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+    // --- BASIC SETUP ---
+    const canvas = document.getElementById('gameCanvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x000814, 0.0025);
+
+    const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 5000);
+    camera.position.set(0, 4, 10);
+
+    const composer = new EffectComposer(renderer);
+    composer.addPass(new RenderPass(scene, camera));
+    const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.2, 0.8, 0.1);
+    composer.addPass(bloom);
+
+    const infoElement = document.getElementById('info');
+    const startMessage = document.getElementById('startMessage');
+    const hud = document.getElementById('hud');
+    
+    // --- GAME STATE ---
+    let gameStarted = false;
+    let gameOver = false;
+    let carModel = null;
+
+    // --- LIGHTING ---
+    const ambient = new THREE.AmbientLight(0x88bbff, 0.25);
+    scene.add(ambient);
+    const keyLight = new THREE.DirectionalLight(0xfff8f0, 0.7);
+    keyLight.position.set(10, 20, 10);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    // --- STRAIGHT NEON TRACK ---
+    const trackWidth = 20;
+    const ground = new THREE.Mesh( new THREE.PlaneGeometry(100, 4000), new THREE.MeshStandardMaterial({ color: 0x071022 }) );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+    
+    const road = new THREE.Mesh( new THREE.PlaneGeometry(trackWidth, 4000), new THREE.MeshStandardMaterial({ color: 0x0b0f2a, emissive: 0x001a3d, emissiveIntensity: 0.8 }) );
+    road.rotation.x = -Math.PI/2;
+    road.position.y = 0.01;
+    scene.add(road);
+
+    const laneSegments = [];
+    for (let i = 0; i < 200; i++) {
+        const seg = new THREE.Mesh( new THREE.BoxGeometry(0.6, 0.02, 6), new THREE.MeshStandardMaterial({ color: 0x00ffd5, emissive: 0x00ffd5, emissiveIntensity: 1.5 }) );
+        seg.position.z = -i * 20 + 250;
+        seg.position.y = 0.02;
+        laneSegments.push(seg);
+        scene.add(seg);
+    }
+    const sideLines = [];
+    for (let s = -1; s <= 1; s += 2) {
+        for (let i = 0; i < 200; i++) {
+            const sl = new THREE.Mesh( new THREE.BoxGeometry(0.2, 0.02, 12), new THREE.MeshStandardMaterial({ color: s < 0 ? 0xff00d0 : 0x00b3ff, emissive: s < 0 ? 0xff00d0 : 0x00b3ff, emissiveIntensity: 1.2 }) );
+            sl.position.x = s * (trackWidth / 2 - 1);
+            sl.position.z = -i * 20 + Math.random() * 6;
+            sl.position.y = 0.02;
+            sideLines.push(sl);
+            scene.add(sl);
+        }
+    }
+
+    // --- PLAYER CAR & OPPONENTS ---
+    const car = new THREE.Group();
+    scene.add(car);
+
+    const opponents = [];
+    const opponentCount = 7;
+
+    const loader = new GLTFLoader();
+    loader.load(
+        'https://bangorinas-play.github.io/PlayGameAssets/Car.glb',
+        function (gltf) {
+            carModel = gltf.scene;
+            carModel.traverse(child => { if (child.isMesh) child.castShadow = true; });
+
+            const playerModel = carModel.clone();
+            playerModel.scale.set(0.6, 0.6, 0.6);
+            playerModel.rotation.y = Math.PI;
+            playerModel.position.y = 0.4;
+            car.add(playerModel);
+
+            for (let i = 0; i < opponentCount; i++) { createOpponent(); }
+
+            startMessage.innerText = 'CLICK TO START';
+            startMessage.style.cursor = 'pointer';
+        },
+        undefined,
+        function (error) {
+            console.error('An error happened while loading the car model.', error);
+            startMessage.innerText = 'ERROR LOADING MODEL';
+        }
+    );
+
+    function createOpponent() {
+        if (!carModel) return;
+        const opponent = new THREE.Group();
+        const model = carModel.clone();
+        model.scale.set(0.6, 0.6, 0.6);
+        model.rotation.y = Math.PI;
+        model.position.y = 0.4;
+        opponent.add(model);
+        resetOpponent(opponent); // Set initial position
+        opponents.push(opponent);
+        scene.add(opponent);
+    }
+    
+    function resetOpponent(o) {
+        const isInitialReset = o.position.z === 0;
+        const zOffset = isInitialReset ? 100 : 800; // Position opponents further away at the start
+        o.position.x = (Math.random() - 0.5) * (trackWidth - 4);
+        o.position.z = car.position.z - zOffset - Math.random() * 800;
+
+        o.userData = {
+            speed: (0.9 + Math.random() * 0.4) * maxSpeed,
+            swerveSpeed: 0.4 + Math.random() * 0.4,
+            swerveAmount: 4 + Math.random() * 4,
+            swerveOffset: Math.random() * Math.PI * 2
+        };
+    }
+
+    const camOffset = new THREE.Vector3(0, 4, 9);
+
+    // --- GAME LOGIC ---
+    let speed = 0;
+    const maxSpeed = 4;
+    const acceleration = 0.06;
+    const friction = 0.02;
+    const turnSpeed = 0.035;
+    const keys = { w:false,a:false,s:false,d:false, arrowup:false,arrowdown:false,arrowleft:false,arrowright:false };
+    const clock = new THREE.Clock();
+
+    window.addEventListener('keydown', e => { keys[e.key.toLowerCase()] = true; });
+    window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+    
+    // --- NEW: Reset Game Function ---
+    function resetGame() {
+        // Reset player
+        car.position.set(0, 0, 0);
+        car.rotation.set(0, 0, 0);
+        speed = 0;
+        camera.position.set(0, 4, 10); // Also reset camera position
+
+        // Reset opponents
+        opponents.forEach(o => resetOpponent(o));
+
+        // Reset state and UI
+        gameOver = false;
+        startMessage.style.display = 'none';
+        startMessage.style.color = '#00ffd5'; // Reset to default color
+        hud.style.background = 'rgba(2,2,6,0.45)';
+    }
+
+
+    function animate(){
+        requestAnimationFrame(animate);
+        const elapsedTime = clock.getElapsedTime();
+
+        // Pause game logic if not started or game over
+        if (!gameStarted || gameOver || !carModel) {
+            composer.render();
+            return;
+        }
+
+        // Player Movement
+        if (keys.w || keys.arrowup) speed = Math.min(maxSpeed, speed + acceleration);
+        if (keys.s || keys.arrowdown) speed = Math.max(-maxSpeed/2, speed - acceleration*1.2);
+        if (!(keys.w || keys.s || keys.arrowup || keys.arrowdown)) {
+            if (speed > 0) speed = Math.max(0, speed - friction);
+            if (speed < 0) speed = Math.min(0, speed + friction);
+        }
+
+        let turn = (keys.a || keys.arrowleft) ? 1 : (keys.d || keys.arrowright) ? -1 : 0;
+        car.rotation.y += turn * turnSpeed * (Math.abs(speed)/maxSpeed);
+        
+        car.position.z -= Math.cos(car.rotation.y) * speed;
+        car.position.x -= Math.sin(car.rotation.y) * speed;
+        
+        if (Math.abs(car.position.x) > trackWidth / 2 + 2) {
+            car.position.x = Math.sign(car.position.x) * (trackWidth / 2 + 2);
+            speed *= 0.8;
+        }
+
+        // Camera Follow
+        const offset = camOffset.clone().applyQuaternion(car.quaternion);
+        camera.position.lerp(car.position.clone().add(offset), 0.1);
+        camera.lookAt(car.position);
+
+        // Opponent AI and Recycling
+        opponents.forEach(o => {
+            const u = o.userData;
+            o.position.x = Math.sin(elapsedTime * u.swerveSpeed + u.swerveOffset) * u.swerveAmount;
+            o.position.z += (u.speed - speed) * 0.1; 
+            if (o.position.z > camera.position.z + 20) {
+                resetOpponent(o);
+            }
+        });
+        
+        // Scenery Recycling
+        laneSegments.forEach(s => { if (s.position.z > camera.position.z + 20) s.position.z -= 4000; });
+        sideLines.forEach(s => { if (s.position.z > camera.position.z + 30) s.position.z -= 4000; });
+
+        // Collision checks
+        const carBox = new THREE.Box3().setFromObject(car);
+        opponents.forEach(o => {
+            const box = new THREE.Box3().setFromObject(o);
+            if (carBox.intersectsBox(box)) {
+                gameOver = true;
+                startMessage.innerText = 'GAME OVER\nClick to Restart';
+                startMessage.style.color = '#ff4444'; // Red color for game over message
+                startMessage.style.display = 'block';
+            }
+        });
+
+        // UI update
+        infoElement.innerText = `Speed: ${Math.round(Math.abs(speed) * 100)} km/h`;
+        hud.innerText = `DISTANCE: ${Math.round(-car.position.z)}`;
+        
+        composer.render();
+    }
+
+    // --- UPDATED: Event Listener for Start/Restart ---
+    startMessage.addEventListener('click', () => {
+        if (!carModel) return;
+
+        if (gameOver) {
+            resetGame();
+        } else if (!gameStarted) {
+            gameStarted = true;
+            startMessage.style.display = 'none';
+        }
+    });
+    
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        composer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    animate();
+    </script>
+</body>
+</html>
