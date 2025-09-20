@@ -1169,52 +1169,12 @@
 
       // Left button: enter main site (close splash)
       if (bangorBtn) bangorBtn.addEventListener('click', function () {
-        window.open('/ai');
-      });
-
-      if (effortBtn) effortBtn.addEventListener('click', function () {
-        effortConfirmation.style.display = '';
-        endeavorConfirmation.style.display = 'none';
-      });
-
-      if (confirmEffortBtn) confirmEffortBtn.addEventListener('click', function () {
-        window.open('https://huggingface.co/bangorinas/Effort-1/resolve/main/Effort-1.0.0-win.zip');
-      });
-
-      if (cancelEffortBtn) cancelEffortBtn.addEventListener('click', function () {
-        effortConfirmation.style.display = 'none';
-      });
-
-      if (endeavorBtn) endeavorBtn.addEventListener('click', function () {
-        endeavorConfirmation.style.display = '';
-        effortConfirmation.style.display = 'none';
-      });
-
-      if (confirmEndeavorBtn) confirmEndeavorBtn.addEventListener('click', function () {
-        window.open('https://huggingface.co/bangorinas/Endeavor-1/resolve/main/Endeavor-1.zip');
-      });
-
-      if (cancelEndeavorBtn) cancelEndeavorBtn.addEventListener('click', function () {
-        endeavorConfirmation.style.display = 'none';
+        window.location.href = '/ai';
       });
 
       // Right button: switch to Micro-Defense splash
       if (microBtn) microBtn.addEventListener('click', function () {
-        showMicro();
-      });
-
-      if (ae1Btn) ae1Btn.addEventListener('click', function () {
-        window.open('https://angel-eye.onrender.com', '_blank', 'noopener');
-      });
-
-      if (ae2Btn) {
-        ae2Btn.addEventListener('click', function (e) {
-          window.open('https://ranggafermata.github.io/ae2-preview/', '_blank', 'noopener');
-        });
-      }
-
-      if (microCloseBtn) microCloseBtn.addEventListener('click', function () {
-        showWelcome();
+        window.location.href = '/micro-defense';
       });
 
       if (donateBtn) {
