@@ -858,25 +858,6 @@
 
        </div>
 
-       <!-- Screen 5: Arcade games (hidden by default) -->
-       <div id="arcade-screen" style="display: none; ">
-         <h2 class="text-center">Play!</h2>
-         <p class="text-center text-muted">Get ready to play some classic arcade games!</p>
-          <div class="actions" style="justify-content: center; overflow-x: auto;">
-            <img src="./assets/AdventureCar.png" id="three-pedals" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
-            <img src="./assets/BigL.png" id="big-l" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
-            <img src="./assets/UfoFighter.png" id="Ufo-run" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button">
-            </div>
-          <button id="arcade-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
-          <img id="DinoBtn" src="./assets/DinoGame.png" class="btn ms-2" style="margin-top: 2rem;">
-       </div>
-
-       <div id="DinoGame" style="display: none;">
-          <img src="./assets/dinoBack.png" id="dino-close" class="btn ms-2" style="margin-top: 2rem; border: none;">
-          <iframe src="https://chromedino.com/color/" frameborder="0" scrolling="yes" width="80%" height="100%" loading="lazy"></iframe>
-          <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
-       </div>
-
 
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
          <h2 class="text-center">About me</h2>
@@ -919,7 +900,7 @@
       const paperScreen = document.getElementById('paper-screen');
       const freePalestineScreen = document.getElementById('FreePalestine');
       const aboutScreen = document.getElementById('aboutscreen');
-      const dinoScreen = document.getElementById('DinoGame');
+   
       const SpotifyPlayer = document.getElementById('spotify-embed');
      
       
@@ -940,9 +921,7 @@
       const emailBtn = document.getElementById('email');
       const whatsappBtn = document.getElementById('whatsapp');
       const telegramBtn = document.getElementById('telegram');
-      const arcadeScreen = document.getElementById('arcade-screen');
-      const arcadeBtn = document.getElementById('play');
-      const arcadeCloseBtn = document.getElementById('arcade-close');
+    
       const paperBtn = document.getElementById('btn-paper');
       const paper1Btn = document.getElementById('paper1-btn');
       const paper2Btn = document.getElementById('paper2-btn');
@@ -964,11 +943,8 @@
       const FreePalestineCloseBtn = document.getElementById('FreePalestine-close');
       const aboutBtn = document.getElementById('information');
       const aboutCloseBtn = document.getElementById('about-close');
-      const threePedalsBtn = document.getElementById('three-pedals');
-      const bigLBtn = document.getElementById('big-l');
-      const UfoBtn = document.getElementById('Ufo-run');
-      const dinoBtn = document.getElementById('DinoBtn');
-      const dinoCloseBtn = document.getElementById('dino-close');
+     
+     
       const musicproductionBtn = document.getElementById('btn-mp');
       const spotifyclosebtn = document.getElementById('spotify-close');
      
@@ -1083,25 +1059,7 @@
        
         
       }
-      function showArcade() {
-        if (!arcadeScreen) return;
-        arcadeScreen.style.display = '';
-  
-        contactScreen.style.display = 'none';
-        microScreen.style.display = 'none';
-        welcomeScreen.style.display = 'none';
-        paypalScreen.style.display = 'none';
-        paperScreen.style.display = 'none';
-        aiScreen.style.display = 'none';
-        freePalestineScreen.style.display = 'none';
-        aboutScreen.style.display = 'none';
-        effortConfirmation.style.display = 'none';
-        endeavorConfirmation.style.display = 'none';
-        dinoScreen.style.display = 'none';
-        
-        
-        
-      }
+    
       function showPaper() {
         if (!paperScreen) return;
    
@@ -1142,23 +1100,7 @@
       }
 
 
-      function showDino() {
-        if (!dinoScreen) return;
-        dinoScreen.style.display = '';
      
-        aboutScreen.style.display = 'none';
-        paperScreen.style.display = 'none';
-        microScreen.style.display = 'none';
-        welcomeScreen.style.display = 'none';
-        paypalScreen.style.display = 'none';
-        contactScreen.style.display = 'none';
-        arcadeScreen.style.display = 'none';
-        aiScreen.style.display = 'none';
-        freePalestineScreen.style.display = 'none';
-        effortConfirmation.style.display = 'none';
-        endeavorConfirmation.style.display = 'none';
-       
-      }
       function hideSpotify() {
         if (!SpotifyPlayer) return;
         SpotifyPlayer.style.display = 'none';
@@ -1234,15 +1176,9 @@
         });
       }
 
-      if (arcadeCloseBtn) {
-        arcadeCloseBtn.addEventListener('click', function () {
-          showWelcome();
-        });
-      }
-
       if (arcadeBtn) {
         arcadeBtn.addEventListener('click', function () {
-          showArcade();
+          window.location.href = '/play';
         });
       }
 
@@ -1371,5 +1307,6 @@
 
 </body>
 </html>
+
 
 
