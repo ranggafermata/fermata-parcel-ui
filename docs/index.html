@@ -17,8 +17,6 @@
   
   <script src="./config.js"></script>
   <script type="module" src="./index.js"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6853406802701388"
-     crossorigin="anonymous"></script>
 
   <script 
   src="https://www.paypal.com/sdk/js?client-id=BAAIWZ8P_O1p0GCNJQMqubBix4KL-kddLHWRai5d_WCOCYUIq4nHxaagQpUCU7U-inlu6lA4JRWnU9doAk&components=hosted-buttons&disable-funding=venmo&currency=USD">
@@ -340,7 +338,6 @@
       max-width: 1000px;
       width: 100%;
       /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
-      
       transform: translateY(0);
     }
 
@@ -364,6 +361,7 @@
 
     #micro-screen,
     #welcome-screen,
+    #welcomeDoor,
     #FreePalestine,
     #paper-screen,
     #ai-screen,
@@ -384,6 +382,12 @@
     #musicPlayer {
       position: absolute;
     
+    }
+    #welcome-logo {
+      position: absolute;
+      align-items: center;
+      top: 140px;
+      z-index: 1000;
     }
 
     #welcome-splash h2 {
@@ -589,7 +593,8 @@
 
       #contact,
       #Palestine,
-      #btn-paper {
+      #btn-paper,
+      #ExpandArrow {
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
@@ -597,7 +602,8 @@
 
       #contact:hover,
       #Palestine:hover,
-      #btn-paper:hover {
+      #btn-paper:hover,
+      #ExpandArrow:hover {
         transform: scale(1.0);
         opacity: 1.0;
       }
@@ -605,7 +611,8 @@
       #contact:active,
       #Palestine:active,
       #btn-paper:active,
-      #information:active {
+      #information:active,
+      #ExpandArrow:active {
         transform: scale(0.8);
         
       }
@@ -718,10 +725,18 @@
 
 
     <div id="welcome-splash" >
+
+      <div id="welcomeDoor"> 
+      <h2 class="text-center">Welcome</h2>
+      <p class="text-center text-muted">Say less. This platform, is your home.</p>
+        <div class="text-center">
+        <img src="./assets/ExpandArrow.png" id="ExpandArrow" class="btn" role="button" alt="ExpandArrow">
+        </div>
+      </div>
+ 
       <!-- Screen 1: front door -->
-      <div id="welcome-screen">
-        <h2 class="text-center">Welcome</h2>
-        <p class="text-center text-muted">Say less. This platform, is your home.</p>
+      <div id="welcome-screen" style="display: none;">
+        
         <div class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
           <img id="btn-bangorinas" src="./assets/bangai.png" class="btn shadow-sm" >
           <img id="btn-micro" src="./assets/bangfense.png" class="btn shadow-sm" role="button" >
@@ -732,12 +747,8 @@
             <h4>Bangorinas</h4>
           </div>
           <div id="side-info-content" class="text-light small py-2">
-            <p class="text-muted">In this Bangorinas platform, you can use AI assistant, utilize micro-defenses, and access various papers, even you can PLAY! some mini-games</p>
-            <p class="text-muted">Pada pelantar Bangorinas ini, Anda dapat menggunakan asisten AI, memanfaatkan micro-defense, dan mengakses berbagai dokumen, bahkan Anda dapat PLAY! beberapa mini-game</p>
-            <p class="text-muted">En esta plataforma de Bangorinas, puedes chatear con un asistente de IA, utilizar micro-defensas y acceder a varios documentos, ¡incluso puedes PLAY! algunos mini-juegos</p>
-            <p class="text-muted">Sur cette plateforme de Bangorinas, vous pouvez discuter avec un assistant d'IA, utiliser des micro-défenses et accéder à divers documents, y compris vous pouvez PLAY! quelques mini-jeux</p>
-            <p class="text-muted">На этой платформе Bangorinas вы можете использовать помощника ИИ, использовать микрозащиту и получать доступ к различным документам, и даже можете PLAY! в некоторые мини-игры</p>
-            <p class="text-muted">На цій платформі Bangorinas ви можете використовувати помічника зі штучним інтелектом, застосовувати мікрозахист та отримувати доступ до різних документів, а також можете PLAY! у деякі міні-ігри</p>
+            <p class="text-muted">Bangorinas website serves as a platform that offers on-device AI applications and cybersecurity tools. Additionally, you can enjoy various mini-games and access a range of other features available here.</p>
+            <p class="text-muted">I encourage you to take full advantage of all the available features! If you wish to support my efforts, you can do so by sharing this project with others or by making a small donation. Every contribution, no matter how modest, is greatly appreciated!</p>
           </div>
           
         </div>
@@ -810,7 +821,7 @@
       <div id="paper-screen" style="display: none;">
         <h2 class="text-center">Papers</h2>
         <p class="text-center text-muted">It's reading time! Grab your favorite paper and dive in.</p>
-        <div class="actions" style="justify-content: space-between; overflow-x: auto;">
+        <div class="actions" style="justify-content: start; overflow-x: auto;">
           <img src="./assets/paper1.png" id="paper1-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 1">
           <img src="./assets/paper2.png" id="paper2-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 2">
           <img src="./assets/paper3.png" id="paper3-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 3">
@@ -834,16 +845,35 @@
         <button id="FreePalestine-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
       </div>
 
-      <!-- Screen 4: Paypal (hidden by default) -->
+      <!-- Screen 4: Support Screen (hidden by default) -->
        <div id="paypal-screen" style="display: none;" class="text-muted">
           <div id="paypal-container-E968U4FQBYDYE"></div>
           <button id="paypal-back" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+          <button id="Qris-barcode" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Support for Bangorinas | Local Food - Indonesia (QRIS - Barcode)</button>
           <script>
             paypal.HostedButtons({
               hostedButtonId: "E968U4FQBYDYE",
             }).render("#paypal-container-E968U4FQBYDYE")
           </script>
+          <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
+        <script>
+          kofiWidgetOverlay.draw('ranggafermata', {
+            'type': 'floating-chat',
+            'floating-chat.donateButton.text': 'Coffee time!',
+            'floating-chat.donateButton.background-color': '#5a56562f',
+            'floating-chat.donateButton.text-color': '#fff'
+          });
+        </script>
       </div>
+
+      <div id="QrisScreen" style="display: none;">
+        <div class="actions" style="justify-content: center;">
+          <img src="./assets/QrisBang.jpg" id="effortss" alt="Effort Logo" class="img-fluid mx-auto d-block" style="max-width: 450px; height: auto; border-radius: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74);">
+        </div>
+        <button id="QrisClose" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+      </div>
+
+
 
       <!-- Screen 5: contact (hidden by default) -->
        <div id="contact-screen"  style="display: none;">
@@ -866,26 +896,23 @@
 
 
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
-         <h2 class="text-center">About me</h2>
-         <p class="text-center text-muted">Hey there!</p>
-         <p class="text-center text-muted">Let me introduce Bangorinas to you as your future place to stay, I created this platform with love and dedication, investing only $20 of my own money into this project.</p>
-         <p class="text-center text-muted">I am an Indonesian Security Software Engineer of Dutch descent with extensive experience in full-stack web development, AI application creation, cybersecurity research, cultural anthropology, and music production/composition.</p>
-         <p class="text-center text-muted">Bangorinas serves as a hub or platform that offers on-device AI applications and cybersecurity tools. Additionally, you can enjoy various mini-games and access a range of other features available here. </p>
-         <p class="text-center text-muted">So, please.. feel free to use all the features here! If you want to support me, you can do so by sharing this project with others or by making a small donation. Every little bit helps!</p>
+         <h2 class="text-center" style="margin-bottom: 2rem;">About me</h2>
+         <p class="text-center text-muted">Bangorinas is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production.</p>
+         <p class="text-center text-muted">Bangorinas founded by Rangga Hermawan, professionally known as Rangga Fermata, is an Indonesian cultural anthropologist of Dutch descent with extensive experience in full-stack web development, AI & cybersecurity software engineering, and music production/composition.</p>
          <button id="about-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
 
     </div>
 
      
-      <div id="spotify-embed">
+      <div id="spotify-embed" style="display: none;">
         <img src="./assets/spotifyclose.png" id="spotify-close" class="btn ms-2">
         <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="400" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
       </div>
 
       <footer class="text-center py-3 small  text-muted " style="position: absolute; bottom: 0; width: 100%;">
-        © <span id="year" ></span> Bangorinas 2.1.2 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+        © <span id="year" ></span> Bangorinas 2.1.7 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
   
@@ -899,6 +926,7 @@
       const OVERLAY_ID = 'welcome-splash-overlay';
       const KEY = 'fermata_welcome_hidden';
       const overlay = document.getElementById(OVERLAY_ID);
+      const welcomeDoor = document.getElementById('welcomeDoor')
       const welcomeScreen = document.getElementById('welcome-screen');
       const aiScreen = document.getElementById('ai-screen');
       const microScreen = document.getElementById('micro-screen');
@@ -907,12 +935,12 @@
       const paperScreen = document.getElementById('paper-screen');
       const freePalestineScreen = document.getElementById('FreePalestine');
       const aboutScreen = document.getElementById('aboutscreen');
-     
+      const QrisScreen = document.getElementById('QrisScreen')
       const SpotifyPlayer = document.getElementById('spotify-embed');
      
       
       
-
+      const ExpandArrow = document.getElementById('ExpandArrow')
       const bangorBtn = document.getElementById('btn-bangorinas');
       const microBtn = document.getElementById('btn-micro');
       const ae1Btn = document.getElementById('ae1-btn');
@@ -928,7 +956,8 @@
       const emailBtn = document.getElementById('email');
       const whatsappBtn = document.getElementById('whatsapp');
       const telegramBtn = document.getElementById('telegram');
-     
+      const QrisBar = document.getElementById('Qris-barcode')
+      const QrisCloseBtn = document.getElementById('QrisClose')
       const arcadeBtn = document.getElementById('play');
       const arcadeCloseBtn = document.getElementById('arcade-close');
       const paperBtn = document.getElementById('btn-paper');
@@ -974,6 +1003,24 @@
         overlay.style.display = 'none';
       }
 
+      function showDoor() {
+        if (!showDoor) return;
+        welcomeDoor.style.display = '';
+        freePalestineScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        SpotifyPlayer.style.display = 'none';
+
+      }
+
       function showPalestine() {
         if (!freePalestineScreen) return;
         freePalestineScreen.style.display = '';
@@ -987,8 +1034,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-       
-    
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
        
         
       }
@@ -999,15 +1046,15 @@
         microScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
-        
+        SpotifyPlayer.style.display = '';
         paperScreen.style.display = 'none';
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-      
-       
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
        
         
       }
@@ -1028,8 +1075,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-      
-   
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
         
        
       }
@@ -1047,8 +1094,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-      
-       
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
         
         
       }
@@ -1066,8 +1113,8 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-      
-       
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
         
       }
       
@@ -1085,29 +1132,44 @@
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-      
-        
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
         
       }
 
       function showAbout() {
         if (!aboutScreen) return;
         aboutScreen.style.display = '';
-     
         paperScreen.style.display = 'none';
         microScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
-       
         aiScreen.style.display = 'none';
         freePalestineScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
-        
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
       
        
         
+      }
+
+      function showQris() {
+        if (!QrisScreen) return;
+        QrisScreen.style.display = '';
+        aboutScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        microScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        aiScreen.style.display = 'none';
+        freePalestineScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        welcomeDoor.style.display = 'none';
       }
 
 
@@ -1318,6 +1380,26 @@
           hideSpotify();
         });
       }
+
+      if (QrisBar) {
+        QrisBar.addEventListener('click', function () {
+          showQris();
+        });
+      }
+
+      if (QrisCloseBtn) {
+        QrisCloseBtn.addEventListener('click', function () {
+          showPaypal();
+        });
+      }
+
+      if (ExpandArrow) {
+        ExpandArrow.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+
 
     })();
   </script>
