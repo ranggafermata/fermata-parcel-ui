@@ -1,0 +1,27 @@
+{
+  "name": "angel-eye-app",
+  "version": "1.4.2",
+  "description": "Geospatial Threat Intelligence Dashboard",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node api/server.js",
+    "dev": "nodemon api/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "threat",
+    "intelligence",
+    "geospatial",
+    "security"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
