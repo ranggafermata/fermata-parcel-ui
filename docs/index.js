@@ -8,70 +8,95 @@ document.addEventListener('DOMContentLoaded', () => {
   const responseBox = document.getElementById('response-box');
   const box = responseBox;
   const yearSpan = document.getElementById('year');
-  const imagePreviewContainer = document.getElementById('image-preview-container');
-  const imagePreview = document.getElementById('image-preview');
-  const removeImageBtn = document.getElementById('remove-image-btn');
   const fileInput = document.getElementById('file-input');
-  let attachedFile = null;
-  let conversationHistory = [];
-  let currentSessionId = null; //
-
   const sendBtn = document.getElementById('send-btn');
-  const stopBtn = document.getElementById('stop-btn');
-  let currentAbortController = null;
-  let isStreaming = false;
-  let streamAborted = false;
+  const micBtn = document.getElementById('mic-btn');
+  const resultScreen = document.getElementById('result-screen');
+  const welcomeScreen = document.getElementById('welcome-screen');
 
-  const TEXT_API_BASE = (typeof TEXT_API_URL !== 'undefined') ? TEXT_API_URL : (window.TEXT_API_URL || '');
-  const VISION_API_BASE = (typeof VISION_API_URL !== 'undefined') ? VISION_API_URL : (window.VISION_API_URL || '');
-
-  // Selected model (default = Effort 1)
-  let selectedModel = localStorage.getItem('selectedModel') || 'effort';
-  // expose small helper to show selection in UI (badge updated shortly)
-  window.getSelectedModel = () => selectedModel;
-  // allow clicks from inline HTML to change model
-  window.effort = () => {
-    if (isStreaming) return alert("Cannot change model while generation is running.");
-    selectedModel = 'effort';
-    localStorage.setItem('selectedModel', selectedModel);
-    const badge = document.getElementById('currentModelBadge');
-    if (badge) badge.textContent = 'Effort 1';
-  };
-  window.endeavor = () => {
-    if (isStreaming) return alert("Cannot change model while generation is running.");
-    selectedModel = 'endeavor';
-    localStorage.setItem('selectedModel', selectedModel);
-    const badge = document.getElementById('currentModelBadge');
-    if (badge) badge.textContent = 'Endeavor 1 (preview)';
-  };
-
-  // Initialize badge text
-  const modelBadgeInit = document.getElementById('currentModelBadge');
-  if (modelBadgeInit) {
-    modelBadgeInit.textContent = selectedModel === 'endeavor' ? 'Endeavor 1 (preview)' : 'Effort 1';
+// --- Microphone Recording Variables ---
+  let mediaRecorder;
+  let audioChunks = [];
+  let isRecording = false;
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = SpeechRecognition ? new SpeechRecognition() : null;
+  if (recognition) {
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
   }
 
-  const researchModal = new bootstrap.Modal(document.getElementById('researchModal'));
+  // --- NEW: Microphone Button Logic (guarded if mic exists) ---
+  if (micBtn) {
+    micBtn.addEventListener('click', async () => {
+      if (isRecording) {
+        // --- Stop Recording ---
+        mediaRecorder.stop();
+        isRecording = false;
+        micBtn.style.filter = ''; // Reset icon color
+        console.log('Recording stopped.');
+      } else {
+        // --- Start Recording ---
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          isRecording = true;
+          micBtn.style.filter = 'invert(50%) sepia(100%) saturate(2000%) hue-rotate(0deg)'; // Reddish color
+          audioChunks = [];
+          mediaRecorder = new MediaRecorder(stream);
+
+          mediaRecorder.ondataavailable = event => {
+            audioChunks.push(event.data);
+          };
+
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const audioFile = new File([audioBlob], "voice_input.wav", { type: "audio/wav" });
+            
+            try {
+              if (typeof displayFilePreview === 'function') displayFilePreview(audioFile);
+            } catch (e) { console.warn('displayFilePreview not available', e); }
+
+            // Automatically submit the form with the recorded audio (if form exists)
+            if (chatForm && typeof chatForm.requestSubmit === 'function') chatForm.requestSubmit();
+            
+            // Clean up the stream tracks
+            stream.getTracks().forEach(track => track.stop());
+          };
+          
+          mediaRecorder.start();
+          console.log('Recording started...');
+
+        } catch (err) {
+          console.error("Error accessing microphone:", err);
+          alert("Could not access microphone. Please check your browser permissions.");
+        }
+      }
+    });
+  } else {
+    console.warn('mic-btn not found; microphone features disabled');
+  }
+
+  // Research modal and buttons (if they exist)
+  const researchModalEl = document.getElementById('researchModal');
   const researchBtn = document.getElementById('researchBtn');
   const researchResultPre = document.getElementById('researchResult');
-
-  // Get references to the new inputs and buttons
   const searchInput = document.getElementById('researchQuerySearch');
   const searchButton = document.getElementById('researchSubmitBtnSearch');
-  const extractInput = document.getElementById('researchQueryExtract');
-  const extractButton = document.getElementById('researchSubmitBtnExtract');
 
-  researchBtn.addEventListener('click', () => {
-    researchModal.show();
-  });
+  if (researchBtn && researchModalEl) {
+    const researchModal = new bootstrap.Modal(researchModalEl);
+    researchBtn.addEventListener('click', () => {
+      researchModal.show();
+    });
+  }
 
   // Generic function to perform the research task
   async function performResearch(task, query) {
-    if (!query) return;
+    if (!query || !researchResultPre) return;
 
     researchResultPre.textContent = 'Working...';
-    searchButton.disabled = true;
-    extractButton.disabled = true;
+    if (searchButton) searchButton.disabled = true;
 
     try {
       const res = await fetch(`${TEXT_API_BASE}/research`, {
@@ -91,624 +116,170 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       researchResultPre.textContent = `Error: ${error.message}`;
     } finally {
-      searchButton.disabled = false;
-      extractButton.disabled = false;
+      if (searchButton) searchButton.disabled = false;
     }
   }
 
-  // Add listeners to both buttons
-  searchButton.addEventListener('click', () => {
-    performResearch('search', searchInput.value.trim());
-  });
-
-  extractButton.addEventListener('click', () => {
-    performResearch('extract', extractInput.value.trim());
-  });
-  // --- 2. All Functions ---
-
-  // Language Translation
-  const translations = {
-    en: { greeting: "Hello!", placeholder: "Ask anything...", recent: "Recent", noHistory: "No history yet", signInNotice: "Sign in to save your chat history and access personalized features.", mainMenu: "Main Menu" },
-    id: { greeting: "Halo!", placeholder: "Tanyakan apa saja...", recent: "Terkini", noHistory: "Belum ada riwayat", signInNotice: "Masuk untuk menyimpan riwayat obrolan Anda dan mengakses fitur yang dipersonalisasi.", mainMenu: "Menu Utama" },
-    fr: { greeting: "Bonjour!", placeholder: "Demandez n'importe quoi...", recent: "Récents", noHistory: "Aucun historique", signInNotice: "Connectez-vous pour enregistrer votre historique de discussion et accéder à des fonctionnalités personnalisées.", mainMenu: "Menu Principal" },
-    es: { greeting: "Hola!", placeholder: "Pregunta cualquier cosa...", recent: "Reciente", noHistory: "Sin historia", signInNotice: "Inicie sesión para guardar su historial de chat y acceder a funciones personalizadas.", mainMenu: "Menú Principal" },
-    ru: { greeting: "Привет!", placeholder: "Спросите что угодно...", recent: "Недавние", noHistory: "Истории пока нет", signInNotice: "Войдите, чтобы сохранить историю чата и получить доступ к персональным функциям.", mainMenu: "Главное меню" },
-    uk: { greeting: "Привіт!", placeholder: "Запитайте що завгодно...", recent: "Недавні", noHistory: "Історії поки немає", signInNotice: "Увійдіть, щоб зберегти історію чату та отримати доступ до персоналізованих функцій.", mainMenu: "Головне меню" }
-  };
-
-  function changeLanguage(lang) {
-    const langData = translations[lang];
-    document.getElementById('chat-input').placeholder = langData.placeholder;
-    document.querySelector('#sidebar h5').textContent = langData.recent;
-    document.querySelector('#authNotice span').textContent = langData.signInNotice;
-    const historyList = document.getElementById('chat-history');
-    if (historyList.querySelector('li').textContent.includes('history') || historyList.querySelector('li').textContent.includes('riwayat') || historyList.querySelector('li').textContent.includes('historique') || historyList.querySelector('li').textContent.includes('historia') || historyList.querySelector('li').textContent.includes('Истории') || historyList.querySelector('li').textContent.includes('Історії')) {
-        historyList.innerHTML = `<li>${langData.noHistory}</li>`;
-    }
-
-    const mainMenu = document.getElementById('main-menu');
-    if (mainMenu) {
-      mainMenu.textContent = langData.mainMenu;
-    }
-    const helloText = document.getElementById('hello-text');
-    if (helloText) { // Check if the element exists before manipulating it
-      helloText.textContent = langData.greeting; // 1. Set the new text
-
-      // 2. Force the animation to restart
-      helloText.style.animation = 'none';
-      helloText.offsetHeight; // This is a trick to trigger a DOM reflow
-      helloText.style.animation = ''; // Reset the animation property
-
-      // 3. Re-apply the animation with the correct number of steps for the new word
-      const typingSpeed = 2; // in seconds
-      const newSteps = langData.greeting.length;
-      setTimeout(() => {
-        helloText.style.animation = `typing ${typingSpeed}s steps(${newSteps}, end), blink-caret .75s step-end infinite`;
-      }, 10);
-    }
-
-    localStorage.setItem('preferredLanguage', lang);
-  }
-    // Make the function globally available for the HTML onclick attributes
-  window.changeLanguage = changeLanguage;
-
-  // Load Sidebar History
-  async function loadSidebarHistory() {
-    const historyList = document.getElementById("chat-history");
-    historyList.innerHTML = "";
-    const user = firebase.auth().currentUser;
-    if (!user) return;
-
-    const db = firebase.firestore();
-    // 1. Query the 'chats' collection to get a list of sessions
-    const snapshot = await db.collection("chats")
-      .where("uid", "==", user.uid)
-      .orderBy("timestamp", "desc")
-      .limit(20)
-      .get();
-
-    if (snapshot.empty) {
-      historyList.innerHTML = `<li>${translations[localStorage.getItem('preferredLanguage') || 'en'].noHistory}</li>`;
-      return;
-    }
-
-    const deleteModal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
-    // 2. Create a list item for each session
-    snapshot.forEach(doc => {
-      const sessionData = doc.data();
-      const sessionId = doc.id;
-      
-      const entry = document.createElement("li");
-
-      // Create a span for the title to allow for editing
-      const titleSpan = document.createElement("span");
-      titleSpan.className = "history-item-title";
-      titleSpan.textContent = sessionData.title || "Untitled Chat";
-      
-      // Create container for action icons
-      const actionsDiv = document.createElement("div");
-      actionsDiv.className = "history-item-actions";
-
-      // Create Edit Icon
-      const editIcon = document.createElement("div");
-      editIcon.className = "editBtn";
-      editIcon.title = "Edit title";
-      editIcon.onclick = (e) => {
-        e.stopPropagation(); // Prevent the chat from loading
-        editSessionTitle(entry, titleSpan, sessionId);
-      };
-
-      // Create Delete Icon
-      const deleteIcon = document.createElement("div");
-      deleteIcon.className = "deleteBtn btn btn-sm";
-      deleteIcon.title = "Delete chat";
-      deleteIcon.onclick = (e) => {
-        e.stopPropagation(); // Prevent the chat from loading
-        
-        // Setup and show the confirmation modal
-        document.getElementById('chatTitleToDelete').textContent = `"${sessionData.title}"`;
-        const confirmBtn = document.getElementById('confirmDeleteBtn');
-        
-        // Clone and replace the button to remove old event listeners
-        const newConfirmBtn = confirmBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-        newConfirmBtn.onclick = () => {
-          deleteSession(sessionId);
-          deleteModal.hide();
-        };
-        
-        deleteModal.show();
-      };
-
-      actionsDiv.appendChild(editIcon);
-      actionsDiv.appendChild(deleteIcon);
-      
-      entry.appendChild(titleSpan);
-      entry.appendChild(actionsDiv);
-
-      entry.dataset.sessionId = sessionId;
-
-      // 3. When a session is clicked, load its entire history
-      entry.onclick = async () => {
-        const sessionId = entry.dataset.sessionId;
-        console.log(`Loading session: ${sessionId}`);
-
-        // Fetch all messages for this session
-        const messagesSnapshot = await db.collection("chats").doc(sessionId).collection("messages").orderBy("timestamp").get();
-
-        // Clear the current state
-        box.innerHTML = "";
-        conversationHistory = [];
-        currentSessionId = sessionId;
-
-        // Rebuild the conversation history and the UI
-        messagesSnapshot.forEach(msgDoc => {
-          const msgData = msgDoc.data();
-          conversationHistory.push(msgData); // Add to local history
-
-          // Create the chat bubble in the UI
-          const bubble = document.createElement("div");
-          bubble.className = `chat-bubble ${msgData.role} align-self-${msgData.role === 'user' ? 'end' : 'start'} text-light`;
-          
-          // Handle potential images in user messages
-          if (msgData.role === 'user' && msgData.imageUrl) {
-              const imgInChat = document.createElement('img');
-              imgInChat.src = msgData.imageUrl;
-              // ... (add styles for image) ...
-              bubble.appendChild(imgInChat);
-          }
-          
-          renderFormattedResponse(bubble, msgData.content);
-          box.appendChild(bubble);
-        });
-        
-        document.querySelector('main').classList.add('chat-active');
-        box.scrollTop = box.scrollHeight;
-      };
-      historyList.appendChild(entry);
+  // Add listeners to both buttons (guarded)
+  if (searchButton && searchInput) {
+    searchButton.addEventListener('click', () => {
+      performResearch('search', searchInput.value.trim());
     });
   }
 
-  function editSessionTitle(listItem, titleSpan, sessionId) {
-    const currentTitle = titleSpan.textContent;
-    
-    // Replace the span with an input field
-    const inputField = document.createElement('input');
-    inputField.type = 'text';
-    inputField.value = currentTitle;
-    inputField.className = 'form-control form-control-sm bg-dark text-light';
-    
-    // Temporarily remove the onclick to load chat
-    listItem.onclick = null;
+  // Attach per-form handlers so duplicate IDs don't block events.
+  const chatForms = document.querySelectorAll('#chat-form');
+  if (chatForms && chatForms.length) {
+    chatForms.forEach(form => {
+      // Find the textarea (may share the same id, so query within the form)
+      const localInput = form.querySelector('#chat-input') || form.querySelector('textarea');
+      const submitBtn = form.querySelector('#send-btn') || form.querySelector('button[type="submit"]');
 
-    inputField.onblur = () => saveNewTitle(listItem, titleSpan, inputField.value, sessionId); // Save on focus loss
-    inputField.onkeydown = (e) => {
-      if (e.key === 'Enter') inputField.blur(); // Save on Enter
-      if (e.key === 'Escape') { // Cancel on Escape
-        titleSpan.textContent = currentTitle;
-        listItem.replaceChild(titleSpan, inputField);
-        loadSidebarHistory(); // Reload to restore original state
-      }
-    };
-    
-    listItem.replaceChild(inputField, titleSpan);
-    inputField.focus();
-  }
-
-  async function saveNewTitle(listItem, titleSpan, newTitle, sessionId) {
-    if (!newTitle.trim()) return; // Don't save empty titles
-
-    const user = firebase.auth().currentUser;
-    if (!user) return;
-
-    const db = firebase.firestore();
-    await db.collection("chats").doc(sessionId).update({ title: newTitle });
-
-    // Update the title in the UI
-    titleSpan.textContent = newTitle;
-
-    listItem.replaceChild(titleSpan, listItem.querySelector('input'));
-
-    console.log(`Title for session ${sessionId} updated to "${newTitle}"`);
-    loadSidebarHistory(); // Reload the history to show the change and restore click handlers
-  }
-
-  async function deleteSession(sessionId) {
-    const user = firebase.auth().currentUser;
-    if (!user) return;
-
-    console.log(`Deleting session: ${sessionId}`);
-    const db = firebase.firestore();
-
-    // Note: Deleting a document does not delete its subcollections.
-    // For a complete cleanup, you'd need a Cloud Function.
-    // For this client-side version, we'll just delete the main session document.
-    // The messages will become "orphaned" but inaccessible through the UI.
-    await db.collection("chats").doc(sessionId).delete();
-    
-    // If this was the currently loaded chat, start a new one
-    if (currentSessionId === sessionId) {
-      document.getElementById("newChatBtn").click();
-    }
-    
-    loadSidebarHistory();
-  }
-
-  // Render Formatted Response (with code blocks)
-  function renderFormattedResponse(container, text) {
-    container.innerHTML = '';
-    const codeBlockRegex = /```(\w+)?\n([\s\S]*?)```/g;
-    let lastIndex = 0;
-    let match;
-    while ((match = codeBlockRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        const plainText = text.substring(lastIndex, match.index);
-        const p = document.createElement('p');
-        p.textContent = plainText;
-        p.style.margin = '0';
-        container.appendChild(p);
-      }
-      const language = match[1] || 'plaintext';
-      const code = match[2].trim();
-      const wrapper = document.createElement('div');
-      wrapper.className = 'code-block-wrapper';
-      const header = document.createElement('div');
-      header.className = 'code-block-header';
-      const langSpan = document.createElement('span');
-      langSpan.textContent = language;
-      const copyBtn = document.createElement('button');
-      copyBtn.className = 'copy-code-btn';
-      copyBtn.textContent = 'Copy Code';
-      copyBtn.onclick = () => {
-        navigator.clipboard.writeText(code).then(() => {
-          copyBtn.textContent = 'Copied!';
-          setTimeout(() => { copyBtn.textContent = 'Copy Code'; }, 2000);
+      // Click on the send button submits the local form
+      if (submitBtn) {
+        submitBtn.addEventListener('click', (ev) => {
+          ev.preventDefault();
+          if (typeof form.requestSubmit === 'function') {
+            form.requestSubmit();
+          } else {
+            form.dispatchEvent(new Event('submit', { bubbles: true }));
+          }
         });
-      };
-      header.appendChild(langSpan);
-      header.appendChild(copyBtn);
-      const pre = document.createElement('pre');
-      const codeEl = document.createElement('code');
-      codeEl.className = `language-${language}`;
-      codeEl.textContent = code;
-      pre.appendChild(codeEl);
-      wrapper.appendChild(header);
-      wrapper.appendChild(pre);
-      container.appendChild(wrapper);
-      lastIndex = codeBlockRegex.lastIndex;
-    }
-    if (lastIndex < text.length) {
-      const remainingText = text.substring(lastIndex);
-      const p = document.createElement('p');
-      p.textContent = remainingText;
-      p.style.margin = '0';
-      container.appendChild(p);
-    }
-    Prism.highlightAll();
+      }
+
+      // Keyboard handling for Enter / Shift+Enter on the local textarea
+      if (localInput) {
+        localInput.addEventListener('keydown', (ev) => {
+          if (ev.key === 'Enter' && !ev.shiftKey) {
+            ev.preventDefault();
+            if (typeof form.requestSubmit === 'function') {
+              form.requestSubmit();
+            } else {
+              form.dispatchEvent(new Event('submit', { bubbles: true }));
+            }
+          }
+          // Shift+Enter will insert a newline by default
+        });
+      }
+
+      // Submit handler (runs Tavily search)
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const li = form.querySelector('#chat-input') || form.querySelector('textarea');
+        const query = (li && li.value ? li.value.trim() : '');
+        if (!query) return;
+        showResultScreen();
+        executeTavilyQuery(query);
+        // Clear the local input after sending
+        if (li) li.value = '';
+      });
+    });
   }
 
+  // --- Tavily API integration for search ---
+  const TAVILY_API_KEY = secrets.TAVILY_API_KEY || ''; // Replace with your actual API key
 
-  // --- 3. Executable Code & Event Listeners ---
+  function showResultScreen() {
+    if (resultScreen) resultScreen.style.display = '';
+    if (welcomeScreen) welcomeScreen.style.display = 'none';
+    // hide other big screens if needed
+    const hideIds = ['paper-screen','paypal-screen','contact-screen','FreePalestine','aboutscreen'];
+    hideIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+    // Scroll result into view
+    if (resultScreen) resultScreen.scrollIntoView({behavior: 'smooth'});
+  }
 
-  // Set footer year
-  yearSpan.textContent = new Date().getFullYear();
+  async function executeTavilyQuery(q) {
+    if (!q) return;
 
-  // Create and prepend the "New Chat" button
-  const newChatBtn = document.createElement("button");
-  newChatBtn.className = "btn btn-outline-light btn-sm mb-3 align-self-start";
-  newChatBtn.textContent = "+ New Chat";
-  newChatBtn.onclick = () => {
-    document.querySelector('main').classList.remove('chat-active');
-    box.innerHTML = "";
-    chatInput.value = "";
-    chatInput.style.height = 'auto';
-    if (attachedFile) {
-      attachedFile = null;
-      fileInput.value = '';
-      imagePreviewContainer.style.display = 'none';
-    }
-    conversationHistory = [];
-    currentSessionId = null;
-  };
-  document.getElementById("chat-history").parentElement.prepend(newChatBtn);
+    const resultsContainer = document.getElementById('tavily-results-container');
+    const queryTitle = document.getElementById('tavily-query-title');
 
-  // Main form submission
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const userInput = chatInput.value.trim();
-    if (!userInput && !attachedFile) return;
-
-    // --- Smart History Management (now in the frontend!) ---
-    const MAX_TURNS = 4; // A turn is a user message and a bot response
-    if (conversationHistory.length > MAX_TURNS * 2) {
-        // Keep only the most recent messages
-        conversationHistory = conversationHistory.slice(-(MAX_TURNS * 2));
-        console.log(`History truncated to the last ${MAX_TURNS} turns.`);
-    }
-
-    // --- UI and History Update ---
-    document.querySelector('main').classList.add('chat-active');
-    const currentLang = localStorage.getItem('preferredLanguage') || 'en';
-    
-    // Add user's message to the history *before* sending
-    if (userInput) {
-        conversationHistory.push({ role: 'user', content: userInput });
-    }
-
-    // --- Create User Bubble ---
-    if (userInput || attachedFile) {
-        const userBubble = document.createElement("div");
-        userBubble.className = "chat-bubble user align-self-end text-light";
-        if (attachedFile) {
-            const imgInChat = document.createElement('img');
-            imgInChat.src = document.getElementById('image-preview').src;
-            imgInChat.style.maxWidth = '100%';
-            imgInChat.style.maxHeight = '300px';
-            imgInChat.style.borderRadius = '0.5rem';
-            imgInChat.style.marginBottom = userInput ? '0.5rem' : '0';
-            userBubble.appendChild(imgInChat);
-        }
-        if (userInput) {
-            const textNode = document.createElement('p');
-            textNode.textContent = userInput;
-            textNode.style.margin = '0';
-            userBubble.appendChild(textNode);
-        }
-        box.appendChild(userBubble);
-        box.scrollTop = box.scrollHeight;
-    }
-    
-
-    const formData = new FormData();
-    formData.append('prompt', userInput);
-    formData.append('language', currentLang);
-    formData.append('history', JSON.stringify(conversationHistory.slice(0, -1))); // Send history *before* the current prompt
-
-    // Attach the selected model so backend can pick the right LLM
-    formData.append('model', selectedModel);
-
-    const imageToSend = attachedFile; // Store the file before we clear it
-    if (imageToSend) {
-        formData.append('image', imageToSend);
-    }
-
-    chatInput.value = "";
-    chatInput.style.height = 'auto';
-    if (attachedFile) {
-      attachedFile = null;
-      fileInput.value = '';
-      imagePreviewContainer.style.display = 'none';
-    }
-
-    const botBubble = document.createElement("div");
-    botBubble.className = "chat-bubble bot align-self-start text-light";
-    botBubble.innerHTML = '<span class="typing-dots">...</span>';
-    box.appendChild(botBubble);
-    box.scrollTop = box.scrollHeight;
+    // Show loading state
+    resultsContainer.innerHTML = '<div class="text-center text-muted"><p>Searching...</p></div>';
+    queryTitle.textContent = `Results for: "${q}"`;
 
     try {
+      const response = await fetch('https://api.tavily.com/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          api_key: TAVILY_API_KEY,
+          query: q,
+          include_answer: true,
+          max_results: 10
+        })
+      });
 
-        const controller = new AbortController();
-        currentAbortController = controller;
-        streamAborted = false;
-        isStreaming = true;
-        stopBtn.style.display = 'inline-block';
-        if (sendBtn) sendBtn.disabled = true;
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`);
+      }
 
-        let fullResponse = "";
-        let targetUrl = imageToSend ? `${VISION_API_BASE}/describe_image` : `${TEXT_API_BASE}/completion`;
+      const data = await response.json();
 
-        const res = await fetch(targetUrl, {
-            method: 'POST',
-            body: formData,
-            signal: currentAbortController.signal
-        });
+      if (!data.results || data.results.length === 0) {
+        resultsContainer.innerHTML = '<div class="text-center text-muted"><p>No results found. Try a different search.</p></div>';
+        return;
+      }
 
-        if (!res.ok) { throw new Error(`HTTP error! status: ${res.status}`); }
+      // Clear and populate results
+      resultsContainer.innerHTML = '';
 
-        if (imageToSend) {
-            // --- Handle single JSON response from Vision API ---
-            const data = await res.json();
-            fullResponse = data.content || `[Error: ${data.error}]`;
-            renderFormattedResponse(botBubble, fullResponse);
-        } else {
-            // --- Handle streaming response from Text API ---
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-            botBubble.innerHTML = "";
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-            if (streamAborted) { aborted = true; break; }
+      // Add answer if available
+      if (data.answer) {
+        const answerDiv = document.createElement('div');
+        answerDiv.style.cssText = 'background: rgba(97, 179, 226, 0.1); border-left: 4px solid #61b3e2; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;';
+        answerDiv.innerHTML = `
+          <h5 style="color: #61b3e2; margin-top: 0;">Answer</h5>
+          <p style="margin: 0; color: #ccc;">${data.answer}</p>
+        `;
+        resultsContainer.appendChild(answerDiv);
+      }
 
-            const chunk = decoder.decode(value);
-            // Server-Sent Events might send multiple data chunks at once
-            const lines = chunk.split('\n\n');
-
-            for (const line of lines) {
-                if (line.startsWith('data: ')) {
-                    try {
-                        const jsonStr = line.substring(6);
-                        if (jsonStr) {
-                            const data = JSON.parse(jsonStr);
-                            const token = data.content;
-                            fullResponse += token;
-                            
-                            // Use renderFormattedResponse to handle potential Markdown in the full stream
-                            renderFormattedResponse(botBubble, fullResponse + "▌"); // Add a cursor during streaming
-                            box.scrollTop = box.scrollHeight;
-                        }
-                    } catch (e) {
-                        console.error("Failed to parse JSON chunk:", line);
-                    }
-                }
-            }
-        }}
+      // Add search results
+      data.results.forEach((result, index) => {
+        const resultDiv = document.createElement('div');
+        resultDiv.style.cssText = 'background: rgba(71, 70, 70, 0.5); padding: 1rem; border-radius: 0.75rem; border: 1px solid rgba(165, 163, 163, 0.2);';
         
-        // Final render without the cursor
-        renderFormattedResponse(botBubble, fullResponse);
-        box.scrollTop = box.scrollHeight;
+        const title = document.createElement('h5');
+        title.style.cssText = 'margin: 0 0 0.5rem 0; color: #61b3e2;';
+        
+        const link = document.createElement('a');
+        link.href = result.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        link.textContent = result.title;
+        link.style.cssText = 'color: #61b3e2; text-decoration: none;';
+        link.addEventListener('mouseenter', () => link.style.textDecoration = 'underline');
+        link.addEventListener('mouseleave', () => link.style.textDecoration = 'none');
+        
+        title.appendChild(link);
+        resultDiv.appendChild(title);
 
-        // only save assistant reply if the stream was not aborted
-        if (!streamAborted) {
-          conversationHistory.push({ role: 'assistant', content: fullResponse });
-        }
+        const snippet = document.createElement('p');
+        snippet.style.cssText = 'margin: 0.5rem 0 0 0; color: #ccc; font-size: 0.95rem; line-height: 1.5;';
+        snippet.textContent = result.content;
+        resultDiv.appendChild(snippet);
 
-        // Save the full response to Firebase
-        if (firebase.auth().currentUser) {
-            const db = firebase.firestore();
-            const user = firebase.auth().currentUser;
-            const userMessage = {
-                role: 'user',
-                content: userInput,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
-            const botMessage = {
-                role: 'assistant',
-                content: fullResponse,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            };
+        const urlDiv = document.createElement('div');
+        urlDiv.style.cssText = 'margin-top: 0.5rem; font-size: 0.85rem; color: #999;';
+        urlDiv.textContent = result.url;
+        resultDiv.appendChild(urlDiv);
 
-            if (currentSessionId === null) {
-                // This is the first message of a new session
-                const newChatRef = await db.collection("chats").add({
-                    uid: user.uid,
-                    title: userInput.substring(0, 40), // Use first 40 chars of prompt as title
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                currentSessionId = newChatRef.id;
-                // Save the first two messages
-                await newChatRef.collection("messages").add(userMessage);
-                if (!streamAborted) await newChatRef.collection("messages").add(botMessage);
-                loadSidebarHistory(); // Reload sidebar to show the new chat
-            } else {
-                // This is an existing session, just add the new messages
-                const chatRef = db.collection("chats").doc(currentSessionId);
-                await chatRef.collection("messages").add(userMessage);
-                if (!streamAborted) await chatRef.collection("messages").add(botMessage);
-            }
-        }
+        resultsContainer.appendChild(resultDiv);
+      });
+
     } catch (error) {
-      // Handle abort separately so user sees a clear message
-      if (error.name === 'AbortError') {
-        streamAborted = true;
-        botBubble.textContent = "⏹ Generation stopped.";
-      } else {
-        botBubble.textContent = "⚠️ Error: " + error.message;
-        console.error("API Error:", error);
-      }
+      console.error('Tavily API error:', error);
+      resultsContainer.innerHTML = `<div class="text-center text-muted"><p>Error: ${error.message}</p><p class="small">Make sure your Tavily API key is configured correctly.</p></div>`;
     }
-    finally {
-      // cleanup streaming state
-      isStreaming = false;
-      if (stopBtn) stopBtn.style.display = 'none';
-      if (sendBtn) sendBtn.disabled = false;
-      currentAbortController = null;
-    }
-  });
-
-  // Stop button: abort the current streaming request
-  if (stopBtn) {
-    stopBtn.addEventListener('click', () => {
-      // mark aborted so streaming loop and post-save logic know it was cancelled
-      streamAborted = true;
-      if (currentAbortController) {
-        try {
-          currentAbortController.abort();
-        } catch (e) { /* ignore */ }
-      }
-      // immediate UI feedback
-      stopBtn.style.display = 'none';
-      if (sendBtn) sendBtn.disabled = false;
-    });
   }
 
-
-  // Other listeners
-  chatInput.addEventListener('input', () => {
-    chatInput.style.height = 'auto';
-    chatInput.style.height = chatInput.scrollHeight + 'px';
-  });
-
-  chatInput.addEventListener("keydown", function (e) {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    chatForm.requestSubmit();
-    }
-  });
-
-  document.getElementById("file-btn").addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  removeImageBtn.addEventListener("click", () => {
-    attachedFile = null;
-    fileInput.value = '';
-    imagePreviewContainer.style.display = 'none';
-  });
-
-  fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      attachedFile = file;
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        imagePreview.src = event.target.result;
-        imagePreviewContainer.style.display = 'inline-block';
-      };
-      reader.readAsDataURL(file);
-    }
-  });
-
-  // --- 4. Initialization on Page Load ---
-  
-  // Sidebar hover/pin logic
-  const sidebar = document.getElementById("sidebar");
-  const sidebarToggle = document.getElementById("sidebarToggle");
-  sidebarToggle.addEventListener("click", (e) => {
-    e.stopPropagation();
-    sidebar.classList.toggle("pinned");
-    if (sidebar.classList.contains("pinned")) {
-      sidebar.classList.add("active");
-    }
-  });
-  sidebar.addEventListener('mouseenter', () => {
-    sidebar.classList.add('active');
-  });
-  sidebar.addEventListener('mouseleave', () => {
-    if (!sidebar.classList.contains('pinned')) {
-      sidebar.classList.remove('active');
-    }
-  });
-  
-  // Firebase Auth UI logic
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-  auth.onAuthStateChanged((user) => {
-    const signin = document.getElementById('signinOption');
-    const signout = document.getElementById('signoutOption');
-    const info = document.getElementById('userInfo');
-    if (user) {
-      signin.classList.add('d-none');
-      signout.classList.remove('d-none');
-      info.classList.remove('d-none');
-      info.innerHTML = `<strong>${user.displayName}</strong><br><small>${user.email}</small>`;
-      loadSidebarHistory();
-    } else {
-      signin.classList.remove('d-none');
-      signout.classList.add('d-none');
-      info.classList.add('d-none');
-      setTimeout(() => { document.getElementById('authNotice').style.display = 'block'; }, 1500);
-    }
-  });
-  
-  // Set initial language
-  const savedLang = localStorage.getItem('preferredLanguage');
-  if (savedLang) {
-    changeLanguage(savedLang);
-  } else {
-    changeLanguage('en');
-  }
+  // (per-form handlers were attached above)
 
 });
