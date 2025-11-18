@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Tavily API integration for search ---
-  const TAVILY_API_KEY = process.env.TAVILY_API_KEY // Replace with your actual API key
+  const TAVILY_API_KEY = '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' // Replace with your actual API key
 
   function showResultScreen() {
     if (resultScreen) resultScreen.style.display = '';
@@ -283,3 +283,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // (per-form handlers were attached above)
 
 });
+
