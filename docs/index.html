@@ -759,18 +759,18 @@
         justify-content: center;
         z-index: 4000;
         background: rgba(10,10,10,0.7);
-        backdrop-filter: blur(6px);
-        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
         padding: 1rem;
       }
       #menu-splash {
-        width: min(880px, 95%);
-        background: linear-gradient(180deg, rgba(21, 55, 75, 0.801), rgba(34, 32, 32, 0.623));
+        width: min(800px, 95%);
+        background: linear-gradient(to right, rgba(21, 64, 82, 0.945), rgba(34, 32, 32, 0.76));
         border-radius: 12px;
         padding: 1.25rem;
         color: #eee;
         box-shadow: 0 0px 30px rgba(0, 18, 24, 0.473);
-        max-height: 85vh;
+        max-height: 92vh;
         overflow: auto;
         text-align: left;
       }
@@ -886,7 +886,7 @@
         <h3 id="tavily-query-title" style="margin: 0; color: #fff;">Search Results</h3>
         <button id="result-back-btn" class="btn btn-outline-light">Back</button>
       </div>
-      <div id="tavily-results-container" style="display: flex; flex-direction: column; gap: 1.5rem;">
+      <div id="tavily-results-container" style="display: flex; flex-direction: column; gap: 1.5rem; overflow-wrap: anywhere;">
         <!-- Tavily results will be inserted here -->
       </div>
        </div>
