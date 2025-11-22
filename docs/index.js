@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- Tavily API integration for search ---
-  const TAVILY_API_KEY = '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' // Replace with your actual API key
+  const TAVILY_API_KEY = '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'; // Replace with your actual API key
 
   function showResultScreen() {
     if (resultScreen) resultScreen.style.display = '';
@@ -212,7 +212,8 @@ document.addEventListener('DOMContentLoaded', () => {
           api_key: TAVILY_API_KEY,
           query: q,
           include_answer: true,
-          max_results: 10
+          max_results: 10,
+          include_favicon: true
         })
       });
 
@@ -276,11 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (error) {
       console.error('Tavily API error:', error);
-      resultsContainer.innerHTML = `<div class="text-center text-muted"><p>Error: ${error.message}</p><p class="small">Make sure your Tavily API key is configured correctly.</p></div>`;
+      resultsContainer.innerHTML = `<div class="text-center text-muted"><p>Error: ${error.message}</p><p class="small">Something went wrong with our backend.</p></div>`;
     }
   }
 
   // (per-form handlers were attached above)
 
 });
-
