@@ -212,8 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
           api_key: TAVILY_API_KEY,
           query: q,
           include_answer: true,
-          max_results: 10,
-          include_favicon: true
+          max_results: 10
         })
       });
 
@@ -284,3 +283,4 @@ document.addEventListener('DOMContentLoaded', () => {
   // (per-form handlers were attached above)
 
 });
+
