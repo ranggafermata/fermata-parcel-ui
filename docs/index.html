@@ -17,8 +17,7 @@
 
   
   <script type="module" src="./index.js"></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6853406802701388"
-     crossorigin="anonymous"></script>
+ 
 
   <script 
   src="https://www.paypal.com/sdk/js?client-id=BAAIWZ8P_O1p0GCNJQMqubBix4KL-kddLHWRai5d_WCOCYUIq4nHxaagQpUCU7U-inlu6lA4JRWnU9doAk&components=hosted-buttons&disable-funding=venmo&currency=USD">
@@ -67,7 +66,7 @@
     }
 
     body {
-      background-image: url("./assets/BangorinasWallNu.png");
+      background-image: url("./assets/BangwallNu.png");
       background-size: cover;
       background-position: center;
       display: none; /* toggled by JS */
@@ -607,6 +606,15 @@
       align-items: center;
       
     }
+    #side-info-footer-2 {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      bottom: -120px;
+      justify-content: center;
+      align-items: center;
+      
+    }
 
     #main-menu {
       padding: 0.5rem 1rem;
@@ -764,7 +772,7 @@
         padding: 1rem;
       }
       #menu-splash {
-        width: min(800px, 95%);
+        width: min(600px, 95%);
         background: linear-gradient(to right, rgba(21, 64, 82, 0.945), rgba(34, 32, 32, 0.76));
         border-radius: 12px;
         padding: 1.25rem;
@@ -812,7 +820,6 @@
       #more-btn:hover, #send-btn:hover, #mic-btn:hover {
         opacity: 100%;
       }
-      
 
 
 </style>
@@ -823,32 +830,44 @@
 <body class="d-flex flex-column min-vh-100">
 
 
-    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; overflow-x: auto; overflow-wrap: normal;">
+    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: static; top: 0; left: 0; width: 100%; z-index: 1000; overflow-x: auto; overflow-wrap: normal; margin-bottom: auto;">
      <div id="side-info-footer" class="actions" style="justify-content: center;">
 
       <button class="btn rounded border-0 mx-2" id="more-btn" type="button">
       <img src="./assets/icons8-circled-menu-64.png" height="25" alt="More Icon">
     </button>
 
-      <div id="information" class="btn">
+      <div>
           <img src="./assets/Infobang.png" alt="Information">
         </div> 
-        
-        
       </div>
-      
-      
     </header>
+
+     <!-- ⭐ GOOGLE-FRIENDLY STATIC CONTENT (IMPORTANT FOR ADSENSE) -->
+  <section id="about-seo-content" style="padding: 20px; max-width: 650px; margin: 0 auto; color: #dddddd; text-align: left; overflow-wrap: anywhere;">
+    <h1 style="font-size: 1.9rem; font-weight: 600;">Bangorinas</h1>
+    <p style="margin-top: 10px; line-height: 1.55;">
+      Bangorinas is an independently operated technology company specializing in AI software development, cybersecurity engineering, open-source security tooling, and music production. Founded by 
+      <strong>Rangga Hermawan (Rangga Fermata)</strong>.
+    </p>
+    <p style="line-height: 1.55;">
+      We are committed to innovation, security, and creativity in the digital age. Explore our applications, academic work, 
+      AI services, mini-games, and digital creations through the menu and featured sections of this website.
+    </p>
+  </section>
+  <!-- END SEO CONTENT BLOCK -->
+
+
+  <!-- ⭐ ADSENSE SCRIPT MUST COME AFTER CONTENT ⭐ -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6853406802701388"
+    crossorigin="anonymous"></script>
 
 
     <div id="welcome-splash" >
-
- 
       <!-- Screen 1: front door -->
-      
     <main id="main-section" class="flex-grow-1 text-center">
           
-      <img src="./assets/BangorinasFontNu.png" alt="Bangorinas Text Logo" class="img-fluid" style="width: 250px; height: auto;">
+     <!--  <img src="./assets/BangorinasFontNu.png" alt="Bangorinas Text Logo" class="img-fluid" style="width: 250px; height: auto;">-->
           
     <div id="response-box" class="mt-2 w-100 text-start rounded" style="min-height: 200px; max-height: 700px; max-width: 850px;"></div>
     
@@ -960,7 +979,7 @@
      <div id="menu-splash-overlay" role="dialog" aria-modal="true" aria-hidden="true">
     <div id="menu-splash" role="document" aria-label="Bangorinas information">
       
-      <div id="side-info-footer" class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
+      <div id="side-info-footer-2" class="actions" style="justify-content: space-between; overflow-y: auto; overflow-wrap: normal;">
         <div id="play" class="btn">
               <img src="./assets/playanimated.gif" alt="play">
             </div>
@@ -994,8 +1013,8 @@
       </div>
       -->
 
-      <footer class="text-center py-3 small  text-muted " style="position: absolute; bottom: 0; width: 100%;">
-        © <span id="year" ></span> Bangorinas 2.2.4 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+      <footer class="text-center py-3 small  text-muted " style="position: static; bottom: 0; width: 100%; margin-top: auto;">
+        © <span id="year" ></span> Bangorinas 2.2.5 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
   
@@ -1070,7 +1089,8 @@
       const aboutScreen = document.getElementById('aboutscreen');
       const QrisScreen = document.getElementById('QrisScreen')
       const SpotifyPlayer = document.getElementById('spotify-embed');
-      const mainSection = document.getElementById('main-section')
+      const mainSection = document.getElementById('main-section');
+      const seoContent = document.getElementById('about-seo-content');
       
       
       const ExpandArrow = document.getElementById('ExpandArrow')
@@ -1141,6 +1161,7 @@
         if (!mainSection) return;
         welcomeScreen.style.display = '';
         mainSection.style.display = '';
+        seoContent.style.display = '';
         resultScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
@@ -1160,7 +1181,7 @@
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         paperScreen.style.display = 'none';
-        
+        seoContent.style.display = '';
         
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
@@ -1178,7 +1199,7 @@
         resultScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
         contactScreen.style.display = 'none';
-       
+        seoContent.style.display = 'none';
         paperScreen.style.display = 'none';
         
        
@@ -1199,7 +1220,7 @@
         paypalScreen.style.display = 'none';
         mainSection.style.display = 'none';
         paperScreen.style.display = 'none';
-      
+        seoContent.style.display = 'none';
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
@@ -1217,7 +1238,7 @@
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         mainSection.style.display = 'none';
-        
+        seoContent.style.display = 'none';
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
@@ -1239,13 +1260,12 @@
         endeavorConfirmation.style.display = 'none';
         QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
-      
-       
+        seoContent.style.display = 'none';
         
       }
 
       function showResult() {
-        if (!aboutScreen) return;
+        if (!resultScreen) return;
         resultScreen.style.display = '';
         aboutScreen.style.display = 'none';
         paperScreen.style.display = 'none';
@@ -1256,6 +1276,7 @@
         endeavorConfirmation.style.display = 'none';
         QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
+        seoContent.style.display = 'none';
         mainSection.style.display = 'none';
       }
 
@@ -1489,7 +1510,4 @@
 
 </body>
 </html>
-
-
-
 
