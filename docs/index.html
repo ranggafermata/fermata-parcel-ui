@@ -66,7 +66,7 @@
     }
 
     body {
-      background-image: url("./assets/BangWallNu.png");
+      background-image: url("./assets/BangwallNu.png");
       background-size: cover;
       background-position: center;
       display: none; /* toggled by JS */
@@ -838,36 +838,17 @@
     </button>
 
       <div>
-          <img src="./assets/Infobang.png" alt="Information">
+          <img src="./assets/Infobang.png" alt="Information" id="information" type="button">
         </div> 
       </div>
     </header>
-
-     <!-- ⭐ GOOGLE-FRIENDLY STATIC CONTENT (IMPORTANT FOR ADSENSE) -->
-  <section id="about-seo-content" style="padding: 20px; max-width: 650px; margin: 0 auto; color: #dddddd; text-align: left; overflow-wrap: anywhere;">
-    <h1 style="font-size: 1.9rem; font-weight: 600;">Bangorinas</h1>
-    <p style="margin-top: 10px; line-height: 1.55;">
-      Bangorinas is an independently operated technology company specializing in AI software development, cybersecurity engineering, open-source security tooling, and music production. Founded by 
-      <strong>Rangga Hermawan (Rangga Fermata)</strong>.
-    </p>
-    <p style="line-height: 1.55;">
-      We are committed to innovation, security, and creativity in the digital age. Explore our applications, academic work, 
-      AI services, mini-games, and digital creations through the menu and featured sections of this website.
-    </p>
-  </section>
-  <!-- END SEO CONTENT BLOCK -->
-
-
-  <!-- ⭐ ADSENSE SCRIPT MUST COME AFTER CONTENT ⭐ -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6853406802701388"
-    crossorigin="anonymous"></script>
 
 
     <div id="welcome-splash" >
       <!-- Screen 1: front door -->
     <main id="main-section" class="flex-grow-1 text-center">
           
-     <!--  <img src="./assets/BangorinasFontNu.png" alt="Bangorinas Text Logo" class="img-fluid" style="width: 250px; height: auto;">-->
+     <img src="./assets/BangorinasFontNu2.png" alt="Bangorinas Text Logo" class="img-fluid">
           
     <div id="response-box" class="mt-2 w-100 text-start rounded" style="min-height: 200px; max-height: 700px; max-width: 850px;"></div>
     
@@ -964,13 +945,12 @@
        
     
 
-
-
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
          <h2 class="text-center" style="margin-bottom: 2rem;">Bangorinas</h2>
          <p class="text-center text-muted">Is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production.</p>
-         <p class="text-center text-muted">Bangorinas founded by Rangga Hermawan, professionally known as Rangga Fermata, is an Indonesian cultural anthropologist of Dutch descent with extensive experience in full-stack web development, AI & cybersecurity software engineering, and music production/composition.</p>
-         
+         <p class="text-center text-muted">Bangorinas founded by Rangga Hermawan, professionally known as Rangga Fermata, is an Indonesian ethnographer-cultural anthropologist of Dutch descent with extensive experience in full-stack engineering, AI & cybersecurity software development, and music production/composition.</p>
+         <p class="text-center text-muted">Bangorinas | Website serves as a hub or platform that offers on-device AI applications, cybersecurity & music production tools. Additionally, you can enjoy various mini-games and access a range of other features available there.</p>
+         <p class="text-center text-muted">We are committed to innovation, security, and creativity in the digital age. Explore our free & open-source applications, academic work, AI services, mini-games, and digital creations through the menu and featured sections of the website.</p>
          <button id="about-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
 
@@ -1014,7 +994,7 @@
       -->
 
       <footer class="text-center py-3 small  text-muted " style="position: static; bottom: 0; width: 100%; margin-top: auto;">
-        © <span id="year" ></span> Bangorinas 2.2.5 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+        © <span id="year" ></span> Bangorinas 2.2.6 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
       </footer>
       
   
@@ -1090,7 +1070,6 @@
       const QrisScreen = document.getElementById('QrisScreen')
       const SpotifyPlayer = document.getElementById('spotify-embed');
       const mainSection = document.getElementById('main-section');
-      const seoContent = document.getElementById('about-seo-content');
       
       
       const ExpandArrow = document.getElementById('ExpandArrow')
@@ -1161,7 +1140,7 @@
         if (!mainSection) return;
         welcomeScreen.style.display = '';
         mainSection.style.display = '';
-        seoContent.style.display = '';
+        
         resultScreen.style.display = 'none';
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
@@ -1181,7 +1160,7 @@
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         paperScreen.style.display = 'none';
-        seoContent.style.display = '';
+        
         
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
@@ -1199,7 +1178,7 @@
         resultScreen.style.display = 'none';
         welcomeScreen.style.display = 'none';
         contactScreen.style.display = 'none';
-        seoContent.style.display = 'none';
+      
         paperScreen.style.display = 'none';
         
        
@@ -1220,7 +1199,7 @@
         paypalScreen.style.display = 'none';
         mainSection.style.display = 'none';
         paperScreen.style.display = 'none';
-        seoContent.style.display = 'none';
+        
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
@@ -1238,7 +1217,7 @@
         paypalScreen.style.display = 'none';
         contactScreen.style.display = 'none';
         mainSection.style.display = 'none';
-        seoContent.style.display = 'none';
+        
         aboutScreen.style.display = 'none';
         effortConfirmation.style.display = 'none';
         endeavorConfirmation.style.display = 'none';
@@ -1260,7 +1239,7 @@
         endeavorConfirmation.style.display = 'none';
         QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
-        seoContent.style.display = 'none';
+        
         
       }
 
@@ -1276,7 +1255,7 @@
         endeavorConfirmation.style.display = 'none';
         QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
-        seoContent.style.display = 'none';
+        
         mainSection.style.display = 'none';
       }
 
@@ -1480,7 +1459,7 @@
 
       if (musicproductionBtn) {
         musicproductionBtn.addEventListener('click', function () {
-          window.location.href = 'https://musicprod.bangorinas.com';
+          window.open('https://docs.google.com/presentation/d/e/2PACX-1vQ_7Hup6QRmWQ4ewTIpWaLbniWF39eyUGnyfPIy5NIqCyCrfOBLGc0ZPEOE1scY6BBtqEJKutM7SFAR/pub?start=false&loop=false&delayms=3000', '_blank', 'noopener');
         });
       }
 
@@ -1510,6 +1489,4 @@
 
 </body>
 </html>
-
-
 
