@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://3nbf4.com/act/files/tag.min.js?z=10494172" data-cfasync="false" async></script>
-  <script>(function(s){s.dataset.zone='10494186',s.src='https://gizokraijaw.net/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Bangorinas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
   <meta name="description" content="Bangorinas is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production." />
-  
+  <meta name="keywords" content="Bangorinas, Bangorinas AI, Bangorinas Micro-Defense, Bangorinas Music Production, Artificial Intelligence, AI applications, Cybersecurity tools, Music production, Mini-games, Open-source software, Digital creativity, Rangga Fermata, Rangga Hermawan" />
 
   <title>Bangorinas</title>
   <link rel="icon" type="image/png" href="./assets/Bangorinas Logo.png"/>
@@ -482,6 +480,7 @@
     #btn-bangorinas,
     #btn-micro,
     #btn-mp,
+    #play,
     #effort-btn,
     #endeavor-btn,
     #ae1-btn,
@@ -497,13 +496,14 @@
     #bm-btn,
     #rf-btn,
     #nms-btn {
-      transform: scale(0.5);
+      transform: scale(0.6);
       transition: transform 0.2s ease;
       border: none;
     }
     #btn-bangorinas:hover,
     #btn-micro:hover,
     #btn-mp:hover,
+    #play:hover,
     #effort-btn:hover,
     #endeavor-btn:hover,
     #ae1-btn:hover,
@@ -519,13 +519,14 @@
     #bm-btn:hover,
     #rf-btn:hover,
     #nms-btn:hover  {
-      transform: scale(0.6);
+      transform: scale(0.7);
       outline: none;
     }
 
     #btn-bangorinas:active,
     #btn-micro:active,
     #btn-mp:active,
+    #play:active,
     #effort-btn:active,
     #endeavor-btn:active,
     #ae1-btn:active,
@@ -541,7 +542,7 @@
     #bm-btn:active,
     #rf-btn:active,
     #nms-btn:active  {
-      transform: scale(0.4);
+      transform: scale(0.5);
     }
 
     #side-info,
@@ -699,12 +700,6 @@
         border: none;
       }
   
-      #play {
-        transform: scale(0.8);
-        transition: transform 0.2s ease;
-        border: none;
-        
-      }
       #arcade-screen .actions {
         animation: fadeIn .25s ease-out;
       }
@@ -712,9 +707,6 @@
       @keyframes playIn {
         from { opacity: 0; transform: translateX(-7px); }
         to { opacity: 1; transform: translateX(0); }
-      }
-      #play:hover {
-        animation: playIn .40s ease-out;
       }
 
       @keyframes leftIn {
@@ -823,6 +815,10 @@
         opacity: 100%;
       }
 
+     
+
+
+
 
 </style>
 
@@ -874,9 +870,10 @@
   <div id="welcome-screen">
         
         <div id="main-features" class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
-          <img id="btn-bangorinas" src="./assets/bangai.png" class="btn" role="button" >
-          <img id="btn-micro" src="./assets/bangfense.png" class="btn" role="button" >
-          <img id="btn-mp" src="./assets/bangaiMP.png" class="btn" role="button" >
+          <img id="btn-bangorinas" src="./assets/bangai.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;" >
+          <img id="btn-micro" src="./assets/bangfense.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
+          <img id="btn-mp" src="./assets/bangaiMP.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
+          <img id="play" src="./assets/bangplay.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
         </div>
       </div>
 
@@ -949,7 +946,7 @@
 
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
          <h2 class="text-center" style="margin-bottom: 2rem;">Bangorinas</h2>
-         <p class="text-center text-muted">Is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production.</p>
+         <p class="text-center text-muted">Bangorinas is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production.</p>
          <p class="text-center text-muted">Bangorinas founded by Rangga Hermawan, professionally known as Rangga Fermata, is an Indonesian ethnographer-cultural anthropologist of Dutch descent with extensive experience in full-stack engineering, AI & cybersecurity software development, and music production/composition.</p>
          <p class="text-center text-muted">Bangorinas | Website serves as a hub or platform that offers on-device AI applications, cybersecurity & music production tools. Additionally, you can enjoy various mini-games and access a range of other features available there.</p>
          <p class="text-center text-muted">We are committed to innovation, security, and creativity in the digital age. Explore our free & open-source applications, academic work, AI services, mini-games, and digital creations through the menu and featured sections of the website.</p>
@@ -962,9 +959,6 @@
     <div id="menu-splash" role="document" aria-label="Bangorinas information">
       
       <div id="side-info-footer-2" class="actions" style="justify-content: space-between; overflow-y: auto; overflow-wrap: normal;">
-        <div id="play" class="btn">
-              <img src="./assets/playanimated.gif" alt="play">
-            </div>
              <div id="contact" class="btn">
           <img src="./assets/Contact.png" alt="Contact">
         </div>
@@ -973,9 +967,6 @@
             </div>
             <div id="btn-paper" class="btn">
           <img src="./assets/Papers.png" alt="Papers">
-        </div>
-        <div id="Palestine" class="btn" style="margin-left: 2rem;">
-          <img src="./assets/PalesLogo.png" alt="Donate">
         </div>
          
       </div>
@@ -996,7 +987,7 @@
       -->
 
       <footer class="text-center py-3 small  text-muted " style="position: static; bottom: 0; width: 100%; margin-top: auto;">
-        © <span id="year" ></span> Bangorinas 2.2.6 — Founded by Rangga Hermawan (A.K.A Rangga Fermata)
+        © <span id="year" ></span> Bangorinas 2.2.7 — Founded by Rangga Hermawan (A.K.A Rangga Fermata) | <a href="https://docs.google.com/document/d/e/2PACX-1vQJoeA6eP9CNPlnJ3Fp9FNZfdOZxKmQWYdHtR1M4EiWXy1RJ_kfJMm4mkKr9yiQJThgAH3W3gY9ffgb/pub" class="text-muted">Terms & Conditions</a>
       </footer>
       
   
@@ -1491,8 +1482,4 @@
 
 </body>
 </html>
-
-
-
-
 
