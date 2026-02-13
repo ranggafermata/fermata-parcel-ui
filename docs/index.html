@@ -6,25 +6,29 @@
   <title>Bangorinas</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" defer></script>
-  
+  <meta name="description" content="Bangorinas is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production." />
+  <meta name="keywords" content="Bangorinas, Bangorinas AI, Bangorinas Micro-Defense, Bangorinas Music Production, Artificial Intelligence, AI applications, Cybersecurity tools, Music production, Mini-games, Open-source software, Digital creativity, Rangga Fermata, Rangga Hermawan" />
 
   <title>Bangorinas</title>
-  <link rel="icon" type="image/png" href="./assets/MicroDefenseLogo.png"/>
-  <audio src="https://github.com/ranggafermata/angel-eye-app/raw/refs/heads/main/Future%20Utopians%20City%20-%20music%20only.mp3" autoplay loop></audio>
-  <meta name="description" content="Bangorinas Micro-Defense is a cybersecurity command center part of Bangorinas family created by Rangga Hermawan." />
-  <meta name="keywords" content="Bangorinas, Cybersecurity, OSINT, Threat Intelligence Tools, TLE Tracking, Earth observation, Rangga Hermawan, Rangga Fermata, Angel's Eye, AE3, Micro-Defense, Security Tools" />
-  <meta name="author" content="Rangga Hermawan" />
+  <link rel="icon" type="image/png" href="./assets/BangIconGold.png"/>
+  
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
   
+  <script type="module" src="./index.js"></script>
+ 
+
+  <script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAIWZ8P_O1p0GCNJQMqubBix4KL-kddLHWRai5d_WCOCYUIq4nHxaagQpUCU7U-inlu6lA4JRWnU9doAk&components=hosted-buttons&disable-funding=venmo&currency=USD">
+</script>
 
   <style>
     @font-face {
       font-family: 'Noto Sans'; /* Give your font a name */
       src: url('./assets/NotoSans_SemiCondensed-Light.ttf') format('ttf'); /* Path to your font file */
     }
-    main {
+     main {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -33,8 +37,18 @@
       position: relative;
       overflow: hidden;
     }
-    
-
+    #response-box {
+      position: absolute;
+      transform: translateY(-25px);
+      overflow-y: auto;
+      display: none;
+      flex-direction: column;
+      padding: 1rem; 
+      overflow-y: auto;
+      padding-bottom: 150px;
+      transition: opacity 0.4s ease;
+    }
+  
     /* The typing effect */
     @keyframes typing {
       from { width: 0 }
@@ -52,10 +66,9 @@
     }
 
     body {
-      position: fixed;
-      inset: 0;
-      background-image: url("./assets/AEWallpaper.gif");
+      background-image: url("./assets/BangWallNew.png");
       background-size: cover;
+      background-position: center;
       display: none; /* toggled by JS */
       align-items: center;
       justify-content: center;
@@ -63,7 +76,57 @@
       padding: 1rem;
       animation: fadeIn .25s ease-out;
     }
-  
+    #chat-form {
+      position: relative;
+      z-index: 10;
+      flex-shrink: 0;
+      transition: transform 0.5s ease-in-out;
+      padding: 1rem 1.5rem 1.5rem 1.5rem;
+      width: 100%;
+      max-width: 880px;
+    }
+    main.chat-active #response-box {
+      display: flex; /* Show the response box */
+    }
+
+    main.chat-active #chat-form {
+      /* Animate the form to the bottom of the screen */
+      transform: translateY(330px);
+    }
+    #chat-form.active {
+      translate: translateY(100px);
+    }
+    .chat-input-group {
+      background: linear-gradient(to bottom, rgb(99, 101, 104), rgb(87, 85, 85), rgb(70, 67, 67));
+      border-radius: 2rem;
+      padding: 0.5rem 1rem;
+      animation: neon-light 3s ease-in-out infinite alternate;
+    }
+    @keyframes neon-light
+    {
+      0% {
+        box-shadow:  #c461e233 0px 0px 5px, 0 0 10px #c461e233, 0 0 15px #cc61e233, 0 0 20px #b361e233;
+      }
+      10% {
+        box-shadow: 0 0 10px #61aee233, 0 0 15px #61b9e233, 0 0 20px #61b3e233, 0 0 25px #61c4e233;
+      }
+    }
+    #chat-input {
+      background: transparent;
+      border: none;
+      color: white;
+      resize: none;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      white-space: pre-wrap;
+      max-height: 120px; /* Set a maximum height before scrolling starts */
+      overflow-y: auto;  /* Show scrollbar only when needed */
+    }
+    #chat-input:focus {
+      outline: none;
+      box-shadow: none;
+    }
+    
 
     /* This is the header for the code block */
     .code-block-header {
@@ -335,7 +398,6 @@
       max-width: 1000px;
       width: 100%;
       /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.74); */
-      
       transform: translateY(0);
     }
 
@@ -359,12 +421,14 @@
 
     #micro-screen,
     #welcome-screen,
+    #welcomeDoor,
     #FreePalestine,
     #paper-screen,
     #ai-screen,
     #aboutscreen,
     #paypal-screen,
-    #musicproduction-screen{
+    #musicproduction-screen,
+    #result-screen {
       animation: fadeIn .25s ease-out;
     }
     
@@ -379,6 +443,12 @@
     #musicPlayer {
       position: absolute;
     
+    }
+    #welcome-logo {
+      position: absolute;
+      align-items: center;
+      top: 140px;
+      z-index: 1000;
     }
 
     #welcome-splash h2 {
@@ -407,64 +477,56 @@
       from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    @keyframes fadeInUp {
-      from {transform: translateY(0); }
-      to {transform: translateY(6px); }
-    }
-
     #btn-bangorinas,
     #btn-micro,
+    #btn-mp,
+    #play,
+    #effort-btn,
+    #endeavor-btn,
     #ae1-btn,
-    #ae2-btn {
-      transform: scale(0.8);
+    #ae2-btn,
+    #paper1-btn,
+    #paper2-btn,
+    #paper3-btn,
+    #paper4-btn,
+    #three-pedals,
+    #big-l,
+    #Ufo-run,
+    #PalesBtn,
+    #bm-btn,
+    #rf-btn,
+    #nms-btn {
+      transform: scale(0.6);
+      transition: transform 0.2s ease;
       border: none;
-      animation: neon-light 1.5s ease-in-out infinite alternate;
     }
-
-    #side-info-content-1 {
-      position: absolute;
-      display: none;
-      animation: fadeInDown .4s ease-out;
-      width: 280px;
-      left: -150px;
-      right: auto;
-      top: 150px;
-      z-index: 10;
-    }
-
-    #side-info-content-2 {
-      position: absolute;
-      display: none;
-      animation: fadeInDown .4s ease-out;
-      width: 280px;
-      right: -150px;
-      left: auto;
-      top: 150px;
-      z-index: 10;
-    }
-
-    #side-info-content-1.active,
-    #side-info-content-2.active {
-      display: block;
-     
-    }
-
     #btn-bangorinas:hover,
     #btn-micro:hover,
+    #btn-mp:hover,
+    #play:hover,
+    #effort-btn:hover,
+    #endeavor-btn:hover,
     #ae1-btn:hover,
-    #ae2-btn:hover  {
-      transform: scale(0.9);
-      transition: transform 0.2s ease;
+    #ae2-btn:hover,
+    #paper1-btn:hover,
+    #paper2-btn:hover,
+    #paper3-btn:hover,
+    #paper4-btn:hover,
+    #three-pedals:hover,
+    #big-l:hover,
+    #Ufo-run:hover,
+    #PalesBtn:hover,
+    #bm-btn:hover,
+    #rf-btn:hover,
+    #nms-btn:hover  {
+      transform: scale(0.7);
       outline: none;
-      animation: neon-light-hover 1.5s ease-in-out infinite alternate;
     }
-
-
 
     #btn-bangorinas:active,
     #btn-micro:active,
     #btn-mp:active,
+    #play:active,
     #effort-btn:active,
     #endeavor-btn:active,
     #ae1-btn:active,
@@ -480,7 +542,7 @@
     #bm-btn:active,
     #rf-btn:active,
     #nms-btn:active  {
-      transform: scale(0.6);
+      transform: scale(0.5);
     }
 
     #side-info,
@@ -545,6 +607,16 @@
       bottom: -120px;
       justify-content: center;
       align-items: center;
+      
+    }
+    #side-info-footer-2 {
+      margin-top: auto;
+      display: flex;
+      flex-direction: column;
+      bottom: -120px;
+      justify-content: center;
+      align-items: center;
+      
     }
 
     #main-menu {
@@ -568,7 +640,7 @@
         background-size: contain;
         background-repeat: no-repeat;
         background-position: bottom;
-        transform: scale(1.05);
+        transform: scale(1.0);
         opacity: 1.0;
     }
     #donate-btn img {
@@ -595,7 +667,8 @@
 
       #contact,
       #Palestine,
-      #btn-paper {
+      #btn-paper,
+      #ExpandArrow {
         transform: scale(0.8);
         transition: transform 0.2s ease;
         border: none;
@@ -603,7 +676,8 @@
 
       #contact:hover,
       #Palestine:hover,
-      #btn-paper:hover {
+      #btn-paper:hover,
+      #ExpandArrow:hover {
         transform: scale(1.0);
         opacity: 1.0;
       }
@@ -612,7 +686,7 @@
       #Palestine:active,
       #btn-paper:active,
       #information:active,
-      #play:active {
+      #ExpandArrow:active {
         transform: scale(0.8);
         
       }
@@ -621,13 +695,11 @@
         animation: fadeIn .25s ease-out;
       }
 
-      
-      #information, #play {
+      #information {
         transition: transform 0.2s ease;
         border: none;
       }
   
-      
       #arcade-screen .actions {
         animation: fadeIn .25s ease-out;
       }
@@ -636,32 +708,132 @@
         from { opacity: 0; transform: translateX(-7px); }
         to { opacity: 1; transform: translateX(0); }
       }
-      
+
       @keyframes leftIn {
         from { opacity: 0; transform: translateX(6px); }
         to { opacity: 1; transform: translateX(0); }
       }
 
-      @keyframes neon-light
-      {
-        0% {
-          box-shadow:  #61cfe233 0px 0px 5px, 0 0 10px #61cfe233, 0 0 15px #61cfe233, 0 0 20px #61cfe233;
-        }
-        10% {
-          box-shadow: 0 0 10px #61cfe233, 0 0 15px #61cfe233, 0 0 20px #61cfe233, 0 0 25px #61cfe233;
-        }
+      #spotify-embed {
+         position: absolute;
+          top: 210px;
+          right: 10px;
+          height: 65%; /* Make it full viewport height */
+          width: 310px;
+          padding: 1rem;
+          opacity: 0;
+          z-index: 1000;
+          cursor: pointer;
+          display: flex; /* Make it a flex container by default */
+          flex-direction: column-reverse;
+
+      }
+      #spotify-embed:hover {
+        animation: leftIn .25s ease-out; 
+        opacity: 1;
       }
 
-      @keyframes neon-light-hover
-      {
-        0% {
-          box-shadow:  #e261c633 0px 0px 5px, 0 0 10px #e261c633, 0 0 15px #e261a133, 0 0 20px #e261bb33;
-        }
-        10% {
-          box-shadow: 0 0 10px #e261b733, 0 0 15px #e261c233, 0 0 20px #e261b733, 0 0 25px #e261b733;
-        }
+      #spotify-close {
+        position: absolute;
+        top: -65px;
+        right: 250px;
+        border: none;
       }
-      
+
+      #spotify-close:hover {
+        transform: scale(1.2);
+      }
+
+      #docs {
+        position: absolute;
+        margin-top: 1rem;
+        display: flex;
+      }
+
+      #menu-splash-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease, visibility 0.25s ease;
+        align-items: center;
+        justify-content: center;
+        z-index: 4000;
+        background: rgba(10,10,10,0.7);
+        backdrop-filter: blur(7px);
+        -webkit-backdrop-filter: blur(7px);
+        padding: 1rem;
+      }
+      #menu-splash {
+        width: min(600px, 95%);
+        background: linear-gradient(to right, rgba(21, 64, 82, 0.945), rgba(34, 32, 32, 0.76));
+        border-radius: 12px;
+        padding: 1.25rem;
+        color: #eee;
+        box-shadow: 0 0px 30px rgba(0, 18, 24, 0.473);
+        max-height: 92vh;
+        overflow: auto;
+        text-align: left;
+      }
+      #menu-splash h2 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+      }
+      #menu-splash .meta {
+        color: #bdbdbd;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+      #menu-splash .actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        justify-content: flex-end;
+      }
+      .menu-close-btn {
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.06);
+        color: #fff;
+        padding: 0.4rem 0.8rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      .menu-primary-btn {
+        background: #2d7cff;
+        border: none;
+        color: #fff;
+        padding: 0.45rem 0.9rem;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+      #more-btn, #send-btn, #mic-btn {
+        opacity: 60%;
+      }
+
+      #more-btn:hover, #send-btn:hover, #mic-btn:hover {
+        opacity: 100%;
+      }
+
+      #ExpandArrow, #ExpandArrow1 {
+        width: 60px;
+        height: auto;
+        margin-top: 1rem;
+        cursor: pointer;
+      }
+      #ExpandArrow:hover, #ExpandArrow1:hover {
+        transform: scale(1.2);
+        transition: transform 0.3s ease;
+        filter: brightness(1.4);
+        }
+      #ExpandArrow:active, #ExpandArrow1:active {
+        transform: scale(0.8);
+        outline: none;
+        }
+
+     
+
+
 
 
 </style>
@@ -672,65 +844,166 @@
 <body class="d-flex flex-column min-vh-100">
 
 
-    <header id="Header" class="navbar px-4 py-2 d-flex justify-content-between align-items-center shadow-sm" style="position: absolute; top: 0; left: 0; width: 100%; z-index: 1000; overflow-x: auto; overflow-wrap: anywhere;">
-     <div id="side-info-footer-1" class="actions" style="justify-content: center;">
-      <div id="information" class="btn">
-          <a href="https://bangorinas.com/"><img src="./assets/Infobang.png" alt="Information"></a>
+    <header class="navbar px-4 py-2 d-flex justify-content-between align-items-center" style="position: static; top: 0; left: 0; width: 100%; z-index: 1000; overflow-x: auto; overflow-wrap: normal; margin-bottom: auto;">
+     <div id="side-info-footer" class="actions" style="justify-content: center;">
+
+      <button class="btn rounded border-0 mx-2" id="more-btn" type="button">
+      <img src="./assets/icons8-circled-menu-64.png" height="25" alt="More Icon">
+    </button>
+
+      <div>
+          <img src="./assets/Infobang.png" alt="Information" id="information" type="button">
         </div> 
-      
       </div>
-      <div id="side-info-footer" class="actions" style="justify-content: space-between; width: 50px; height: 65px; scale: 0.5; display: none;">
-        <div id="play" class="btn">
-              <img src="./assets/MicroDefenseLogo.png" >
-            </div>
-             
-      </div>
-      
     </header>
 
 
     <div id="welcome-splash" >
       <!-- Screen 1: front door -->
-      <div id="welcomeDoor"> 
-      <img src="./assets/MicroDefenseLogo.png" class="img-fluid mx-auto d-block" style="max-width: 200px; height: auto" alt="Micro-Defense Logo">
-        <h2 class="text-center">Micro-Defense</h2>
-        <p class="text-center text-muted">Bangorinas Cybersecurity Operations Center</p>
-        <div class="text-center">
-        <img src="./assets/ExpandArrow.png" id="ExpandArrow" class="btn" role="button" alt="ExpandArrow">
+    <main id="main-section" class="flex-grow-1 text-center">
+          
+     <img src="./assets/BangAgrandirFont.png" alt="Bangorinas Text Logo" class="img-fluid">
+          
+    <div id="response-box" class="mt-2 w-100 text-start rounded" style="min-height: 200px; max-height: 700px; max-width: 850px;"></div>
+    
+    <form id="chat-form" class="w-100 mt-4">
+      <div class="input-group chat-input-group">
+      <button class="btn rounded border-0" id="send-btn" type="submit">
+      <img src="./assets/icons8-search-32.png" height="20" alt="Send Icon">
+    </button>
+
+    <textarea id="chat-input" class="form-control" placeholder="Search / ask anything" rows="1"></textarea>
+    <div class="d-flex justify-content-center">
+          <button class="btn border-0" type="button" id="mic-btn" title="Voice input">
+          <img src="./assets/icons8-mic-32.png" height="20">
+        </button>
+      </div>
+    
+  </div>
+</form>
+  </main>
+
+  <div id="welcome-screen">
+        
+        <div id="main-features" class="actions" style="justify-content: space-between; overflow-x: auto; overflow-wrap: normal;">
+          <img id="btn-bangorinas" src="./assets/bangai.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;" >
+          <img id="btn-micro" src="./assets/bangfense.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
+          <img id="btn-mp" src="./assets/bangaiMP.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
+          <img id="play" src="./assets/bangplay.png" class="img-fluid d-block" role="button" style=" max-width: 210px; height: auto;">
         </div>
       </div>
 
-      <!-- Screen 2: Micro-Defense (hidden by default) -->
-      <div id="micro-screen" style="display: none;">
+    
+
+      <!-- Search Result (hidden by default) -->
+       <div id="result-screen" style="display: none; padding: 2rem 1rem; max-width: 900px; margin: 0 auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 id="tavily-query-title" style="margin: 0; color: #fff;">Search Results</h3>
+        <button id="result-back-btn" class="btn btn-outline-light">Back</button>
+      </div>
+      <div id="tavily-results-container" style="display: flex; flex-direction: column; gap: 1.5rem; overflow-wrap: anywhere;">
+        <!-- Tavily results will be inserted here -->
+      </div>
+       </div>
+
+      <!-- Screen 3: Paper (hidden by default) -->
+      <div id="paper-screen" style="display: none;">
+        <h2 class="text-center">Papers</h2>
+        <p class="text-center text-muted">It's reading time! Grab your favorite paper and dive in.</p>
+        <div class="actions" style="justify-content: start; overflow-x: auto;">
+          <img src="./assets/paper1.png" id="paper1-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 1">
+          <img src="./assets/paper2.png" id="paper2-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 2">
+          <img src="./assets/paper3.png" id="paper3-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 3">
+          <img src="./assets/paper4.png" id="paper4-btn" class="btn shadow-sm" style="backdrop-filter: blur(10px);" role="button" alt="Paper Type 4">
+        </div>
+        <div id="side-info-paper" class="d-flex">
+          <div id="side-info-header" class="text-light small">
+            <h4>Papers</h4>
+            <p class="text-muted">You can access my research papers and articles. If you want to see more the specific topics or papers, you can go to https://isbi.academia.edu/RanggaFermata</p>
+          </div>
+          </div>
+        <button id="paper-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+      </div>
+
+
+      <!-- Screen 4: Support Screen (hidden by default) -->
+       <div id="paypal-screen" style="display: none;" class="text-muted">
+          <div id="paypal-container-E968U4FQBYDYE"></div>
+          <button id="paypal-back" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+          <script>
+            paypal.HostedButtons({
+              hostedButtonId: "E968U4FQBYDYE",
+            }).render("#paypal-container-E968U4FQBYDYE")
+          </script>
+      </div>
+
+      
+
+
+
+      <!-- Screen 5: contact (hidden by default) -->
+       <div id="contact-screen"  style="display: none;">
+         <h2 class="text-center">Contact me</h2>
+         <p class="text-center text-muted">If you have any questions or feedback, feel free to reach out!</p>
+         <div class="actions" style="justify-content: center; overflow-x: auto; overflow-wrap: normal;">
+           <img src="./assets/linkedin.png" id="linkedin" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/instagram.png" id="instagram" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/email.png" id="email" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/whatsapp.png" id="whatsapp" class="btn btn-outline-dark border-0" role="button">
+           <img src="./assets/telegram.png" id="telegram" class="btn btn-outline-dark border-0" role="button">
+          </div>
+          <button id="contact-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
+
+       </div>
+
+       <!-- Screen 5: Arcade games (hidden by default) -->
        
-        <div class="actions" style="justify-content: center; overflow-x: auto;">
-          <img src="./assets/ae3Banner.png" class="img-fluid mx-auto d-block" style="max-width: 750px; height: auto" id="ae1-btn" role="button" alt="AE 1">
-        </div>
-
-         <div class="d-flex">
-        <div id="side-info-content-1" class="text-light  py-2" >
-            <h6>Angel's Eye 3</h6>
-            <p class="text-muted">Angel's Eye 3 or AE3 is a cutting-edge OSINT & Cyber Threat Intelligence, designed for users of all backgrounds. Harnessing real-time IP mapping, AI-driven threat analysis, TLE tracking, radio browsing, ADS-B aviation tracking, and public live camera data streams, Angel's Eye empowers users to proactively identify, mitigate cyber threats, gain open-source intelligence and enhance situational awareness. Stay ahead in the ever-evolving digital landscape with our comprehensive solution for enhanced security and situational awareness.</p>
-          </div>
-          </div>
-
-
-      </div>
+    
 
        <div id="aboutscreen" class="shadow-sm" style="display: none;">
-         <h2 class="text-center">About</h2>
-         <p class="text-center text-muted">Bangorinas | Micro-Defense is a cybersecurity operations divison of Bangorinas, its goal is to enhance security measures through cutting-edge, security-driven solutions.</p>
-         <p class="text-center text-muted">Micro-Defense focuses on providing advanced threat intelligence tools and services to enhancing your security posture through innovative security-driven solutions.</p>
-         <p class="text-center text-muted">With a commitment to innovation and excellence, Micro-Defense aims to be a trusted partner in the ever-evolving landscape of cybersecurity.</p>
+         <h2 class="text-center" style="margin-bottom: 2rem;">Bangorinas</h2>
+         <p class="text-center text-muted">Bangorinas is a diversified, independently run business, that mainly focused on information technology, AI-software development, cybersecurity tools, and music production.</p>
+         <p class="text-center text-muted">Bangorinas founded by Rangga Hermawan, professionally known as Rangga Fermata, is an Indonesian cultural anthropologist of Dutch descent with extensive experience in full-stack engineering, AI & cybersecurity software development, and music production/composition.</p>
+         <p class="text-center text-muted">Bangorinas | Website serves as a hub or platform that offers on-device AI applications, cybersecurity & music production tools. Additionally, you can enjoy various mini-games and access a range of other features available there.</p>
+         <p class="text-center text-muted">We are committed to innovation, security, and creativity in the digital age. Explore our free & open-source applications, academic work, AI services, mini-games, and digital creations through the menu and featured sections of the website.</p>
          <button id="about-close" class="btn btn-outline-light ms-2" style="margin-top: 2rem;">Back</button>
        </div>
 
     </div>
 
-     
+     <div id="menu-splash-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div id="menu-splash" role="document" aria-label="Bangorinas information">
+      
+      <div id="side-info-footer-2" class="actions" style="justify-content: space-between; overflow-y: auto; overflow-wrap: normal;">
+             <div id="contact" class="btn">
+          <img src="./assets/Contact.png" alt="Contact">
+        </div>
+        <div id="donate-btn" class="btn">
+          <img src="./assets/donate1.png" alt="Donate">
+            </div>
+            <div id="btn-paper" class="btn">
+          <img src="./assets/dr (1).png" alt="Papers">
+        </div>
+         
+      </div>
+      
 
-      <footer class="text-center py-3 small  text-muted " style="position: absolute; bottom: 0; width: 100%;">
-        © <span id="year" ></span> Bangorinas | Micro-Defense — Part of <a href="https://bangorinas.com/" class="text-muted">Bangorinas</a> family. All rights reserved.
+      <div class="actions">
+        <button class="menu-close-btn" id="menu-splash-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+     <!-- 
+      <div id="spotify-embed" style="display: none;">
+        <img src="./assets/spotifyclose.png" id="spotify-close" class="btn ms-2">
+        <iframe data-testid="embed-iframe" style="border-radius:12px;" src="https://open.spotify.com/embed/artist/4UADMY5PBjWdrOpUa8iL7o?utm_source=generator&theme=0" width="20%" height="400" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        <style type="text/css">iframe { position: absolute; width: 100%; height: 100%; z-index: 999; }</style>
+      </div>
+      -->
+
+      <footer class="text-center py-3 small  text-muted " style="position: static; bottom: 0; width: 100%; margin-top: auto;">
+        © <span id="year" ></span> Bangorinas 2.2.8 — Founded by Rangga Hermawan (A.K.A Rangga Fermata) | <a href="https://docs.google.com/document/d/e/2PACX-1vQJoeA6eP9CNPlnJ3Fp9FNZfdOZxKmQWYdHtR1M4EiWXy1RJ_kfJMm4mkKr9yiQJThgAH3W3gY9ffgb/pub" class="text-muted">Terms & Conditions</a>
       </footer>
       
   
@@ -740,18 +1013,77 @@
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
   <script>
+    // Menu splash logic: show when clicking the menu button
+    (function () {
+      const logo = document.getElementById('more-btn');
+      const overlay = document.getElementById('menu-splash-overlay');
+      const closeBtn = document.getElementById('menu-splash-close');
+      const openBtn = document.getElementById('menu-splash-open');
+
+      if (!logo || !overlay) return;
+
+      function showInfo() {
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => {
+          overlay.style.visibility = 'visible';
+          overlay.style.opacity = '1';
+          overlay.setAttribute('aria-hidden', 'false');
+        });
+        // trap focus briefly
+        const focusable = overlay.querySelector('button') || overlay;
+        if (focusable) focusable.focus();
+      }
+
+      function hideInfo() {
+        overlay.style.opacity = '0';
+        overlay.style.visibility = 'hidden';
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.addEventListener('transitionend', function onEnd(e) {
+          if (e.propertyName === 'opacity') {
+            overlay.style.display = 'none';
+            overlay.removeEventListener('transitionend', onEnd);
+          }
+        });
+      }
+
+      logo.addEventListener('click', (e) => { e.preventDefault(); showInfo(); });
+      if (closeBtn) closeBtn.addEventListener('click', hideInfo);
+      if (openBtn) openBtn.addEventListener('click', () => {
+        hideInfo();
+        // focus main section to help keyboard users
+        const main = document.getElementById('main-section');
+        if (main) main.focus();
+      });
+
+      // Close on Esc or click outside dialog
+      overlay.addEventListener('click', (ev) => {
+        if (ev.target === overlay) hideInfo();
+      });
+      document.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Escape' && overlay.style.display === 'flex') hideInfo();
+      });
+    })();
+  </script>
+  <script>
     (function () {
       const OVERLAY_ID = 'welcome-splash-overlay';
       const KEY = 'fermata_welcome_hidden';
       const overlay = document.getElementById(OVERLAY_ID);
-      const microScreen = document.getElementById('micro-screen');
+      const welcomeDoor = document.getElementById('welcomeDoor')
+      const welcomeScreen = document.getElementById('welcome-screen');
+      const resultScreen = document.getElementById('result-screen')
+      const paypalScreen = document.getElementById('paypal-screen');
+      const contactScreen = document.getElementById('contact-screen');
+      const paperScreen = document.getElementById('paper-screen');
       const aboutScreen = document.getElementById('aboutscreen');
-      const welcomeDoor = document.getElementById('welcomeDoor');
-      const MicroLogo = document.getElementById('side-info-footer');
+      const QrisScreen = document.getElementById('QrisScreen')
+      const SpotifyPlayer = document.getElementById('spotify-embed');
+      const mainSection = document.getElementById('main-section');
+      
       
       const ExpandArrow = document.getElementById('ExpandArrow')
       const bangorBtn = document.getElementById('btn-bangorinas');
-      const microBtn = document.getElementById('information');
+      const microBtn = document.getElementById('btn-micro');
       const ae1Btn = document.getElementById('ae1-btn');
       const ae2Btn = document.getElementById('ae2-btn');
       const microCloseBtn = document.getElementById('micro-close');
@@ -760,12 +1092,14 @@
       const mainMenuBtn = document.getElementById('main-menu');
       const contactBtn = document.getElementById('contact');
       const contactBack = document.getElementById('contact-close');
+      const resultBackBtn = document.getElementById('result-back-btn');
       const linkedinBtn = document.getElementById('linkedin');
       const instagramBtn = document.getElementById('instagram'); 
       const emailBtn = document.getElementById('email');
       const whatsappBtn = document.getElementById('whatsapp');
       const telegramBtn = document.getElementById('telegram');
-      const arcadeScreen = document.getElementById('arcade-screen');
+      const QrisBar = document.getElementById('Qris-barcode')
+      const QrisCloseBtn = document.getElementById('QrisClose')
       const arcadeBtn = document.getElementById('play');
       const arcadeCloseBtn = document.getElementById('arcade-close');
       const paperBtn = document.getElementById('btn-paper');
@@ -787,7 +1121,7 @@
       const FreePalestineBtn = document.getElementById('Palestine');
       const PalesBtn = document.getElementById('PalesBtn');
       const FreePalestineCloseBtn = document.getElementById('FreePalestine-close');
-      const aboutBtn = document.getElementById('play');
+      const aboutBtn = document.getElementById('information');
       const aboutCloseBtn = document.getElementById('about-close');
       const threePedalsBtn = document.getElementById('three-pedals');
       const bigLBtn = document.getElementById('big-l');
@@ -798,78 +1132,297 @@
       const spotifyclosebtn = document.getElementById('spotify-close');
      
      
+    
 
-      function showMicro() {
-        if (!microScreen) return;
-        microScreen.style.display = '';
+      function showOverlay() {
+        if (!overlay) return;
+        overlay.style.display = 'flex';
+        showWelcome();
+      }
+
+      function hideOverlay() {
+        if (!overlay) return;
+        overlay.style.display = 'none';
+      }
+
+      function showMain() {
+        if (!mainSection) return;
+        welcomeScreen.style.display = '';
+        mainSection.style.display = '';
+        
+        resultScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
         aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
-        MicroLogo.style.display = '';
+      }
+
+      function showWelcome() {
+        if (!welcomeScreen) return;
+        welcomeScreen.style.display = '';
+        mainSection.style.display = '';
+        resultScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        paperScreen.style.display = 'none';
+        
+        
+        aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
        
+        
+      }
+
+      function showPaypal() {
+        if (!paypalScreen) return;
+        paypalScreen.style.display = '';
+        mainSection.style.display = 'none';
+        resultScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+      
+        paperScreen.style.display = 'none';
+        
+       
+       
+        aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
+        
+        
+      }
+      function showContact() {
+        if (!contactScreen) return;
+        contactScreen.style.display = '';
+        resultScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        mainSection.style.display = 'none';
+        paperScreen.style.display = 'none';
+        
+        aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
+        
+      }
+      
+      function showPaper() {
+        if (!paperScreen) return;
+   
+        paperScreen.style.display = '';
+        resultScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        mainSection.style.display = 'none';
+        
+        aboutScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
+        
       }
 
       function showAbout() {
         if (!aboutScreen) return;
         aboutScreen.style.display = '';
+        paperScreen.style.display = 'none';
+        resultScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        mainSection.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
         welcomeDoor.style.display = 'none';
-        microScreen.style.display = 'none';
-       
-      
- 
+        
+        
       }
 
-      function showDoor() {
-        if (!showDoor) return;
-        welcomeDoor.style.display = '';
-        microScreen.style.display = 'none';
+      function showResult() {
+        if (!resultScreen) return;
+        resultScreen.style.display = '';
         aboutScreen.style.display = 'none';
-        MicroLogo.style.display = 'none';
-  
-
+        paperScreen.style.display = 'none';
+        welcomeScreen.style.display = 'none';
+        paypalScreen.style.display = 'none';
+        contactScreen.style.display = 'none';
+        effortConfirmation.style.display = 'none';
+        endeavorConfirmation.style.display = 'none';
+        QrisScreen.style.display = 'none';
+        welcomeDoor.style.display = 'none';
+        
+        mainSection.style.display = 'none';
       }
+
+      
 
 
       // Left button: enter main site (close splash)
       if (bangorBtn) bangorBtn.addEventListener('click', function () {
-        window.open('/ai');
+        window.location.href = 'https://ai.bangorinas.com';
       });
 
-     if (ae1Btn) {
-        ae1Btn.addEventListener('mouseenter', function () {
-          document.getElementById('side-info-content-1').classList.add('active');
-          document.getElementById('side-info-content-2').classList.remove('active');
-        });
-        ae1Btn.addEventListener('mouseleave', function () {
-          document.getElementById('side-info-content-1').classList.remove('active');
+      // Right button: switch to Micro-Defense splash
+      if (microBtn) microBtn.addEventListener('click', function () {
+        window.location.href = 'https://micro-defense.bangorinas.com';
+      });
 
+
+      if (donateBtn) {
+        donateBtn.addEventListener('click', function () {
+          showPaypal();
+        });
+      }
+      if (paypalBackBtn) {
+        paypalBackBtn.addEventListener('click', function () {
+          showWelcome();
         });
       }
 
-      if (ae2Btn) {
-        ae2Btn.addEventListener('mouseenter', function () {
-          document.getElementById('side-info-content-2').classList.add('active');
-          document.getElementById('side-info-content-1').classList.remove('active');
-        });
-        ae2Btn.addEventListener('mouseleave', function () {
-          document.getElementById('side-info-content-2').classList.remove('active');
+      if (mainMenuBtn) {
+        mainMenuBtn.addEventListener('click', function () {
+          showOverlay();
         });
       }
 
-      if (ae1Btn) ae1Btn.addEventListener('click', function () {
-        window.location.href = 'https://angel-eye.bangorinas.com/';
-      });
+      if (contactBtn) {
+        contact.addEventListener('click', function () {
+          showContact();
+        });
+      }
 
+      if (contactBack) {
+        contactBack.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (resultBackBtn) {
+        resultBackBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (linkedinBtn) {
+        linkedinBtn.addEventListener('click', function () {
+          window.open('https://www.linkedin.com/in/ranggafermata/', '_blank', 'noopener');
+        });
+      }
+
+      if (instagramBtn) {
+        instagramBtn.addEventListener('click', function () {
+          window.open('https://www.instagram.com/ranggafermata/', '_blank', 'noopener');
+        });
+      }
+
+      if (emailBtn) {
+        emailBtn.addEventListener('click', function () {
+          window.open('mailto:ranggafermata8@gmail.com', '_blank', 'noopener');
+        });
+      }
+
+      if (whatsappBtn) {
+        whatsappBtn.addEventListener('click', function () {
+          window.open('https://wa.me/6281318664166', '_blank', 'noopener');
+        });
+      }
+
+      if (telegramBtn) {
+        telegramBtn.addEventListener('click', function () {
+          window.open('https://t.me/ranggafermata', '_blank', 'noopener');
+        });
+      }
+
+      if (arcadeCloseBtn) {
+        arcadeCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (arcadeBtn) arcadeBtn.addEventListener('click', function () {
+          window.location.href = 'https://play.bangorinas.com';
+        });
     
-      if (ae2Btn) {
-        ae2Btn.addEventListener('click', function (e) {
-          window.open('https://ranggafermata.github.io/ae2-preview/', '_blank', 'noopener');
+
+      if (paperBtn) {
+        paperBtn.addEventListener('click', function () {
+          window.location.href = 'https://thinktank.bangorinas.com';
         });
       }
 
-      if (microCloseBtn) microCloseBtn.addEventListener('click', function () {
-        window.location.href = 'https://bangorinas.com/';
-      });
+      if (paper1Btn) {
+        paper1Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vTV_ocZ9i3hKAY5emfKDCF3-E3U5R6_oY27GGAUrxVimerv7CAEchGhLDRBqqjM8Nm0Xmd0FVUajyKx/pub', '_blank', 'noopener');
+        });
+      }
 
+      if (paper2Btn) {
+        paper2Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vSchTW_qbltOZ7sAzL5wdEDsbBM5P-s8NjcdU7vn2PPx4vrxqdfxmQWfzTCa7JtrHUz9jynelQ0uzaL/pub', '_blank', 'noopener');
+        });
+      }
+
+      if (paper3Btn) {
+        paper3Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vQgdqEsmoLyKHUQXS7tauHXkeuagcxU5wOcnozFejBvFmyb9zIxynGX7bVX6uE5vwlbFpO5XjEcIh9K/pub', '_blank', 'noopener');
+        });
+      }
+
+      if (paper4Btn) {
+        paper4Btn.addEventListener('click', function () {
+          window.open('https://docs.google.com/document/d/e/2PACX-1vTt4JEq7AW3BNMcwgy6Uqss77W6c1xthgzGm9h1YNh-O1NWtdJDUMTN7vILY6Qdx7JUFSioQl8TlyOy/pub', '_blank', 'noopener');
+        });
+      }
+
+      if (paperCloseBtn) {
+        paperCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (aiCloseBtn) {
+        aiCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
+
+      if (docsBtn) {
+        docsBtn.addEventListener('click', function () {
+          window.open('https://fermata-ai.my.canva.site/bangorinas-ai', '_blank', 'noopener');
+        });
+      }
+
+      if (FreePalestineBtn) {
+        FreePalestineBtn.addEventListener('click', function () {
+          window.open('https://eye-on-palestine.org/', '_blank', 'noopener');
+        });
+      }
+
+      if (PalesBtn) {
+        PalesBtn.addEventListener('click', function () {
+          window.open('https://eye-on-palestine.org/', '_blank', 'noopener');
+        });
+      }
+
+      if (FreePalestineCloseBtn) {
+        FreePalestineCloseBtn.addEventListener('click', function () {
+          showWelcome();
+        });
+      }
 
       if (aboutBtn) {
         aboutBtn.addEventListener('click', function () {
@@ -879,15 +1432,65 @@
 
       if (aboutCloseBtn) {
         aboutCloseBtn.addEventListener('click', function () {
-          showMicro();
+          showWelcome();
+        });
+      }
+
+      if (threePedalsBtn) {
+        threePedalsBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/3-pedals/', '_blank', 'noopener');
+        });
+      }
+
+      if (bigLBtn) {
+        bigLBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/big-l/', '_blank', 'noopener');
+        });
+      }
+
+      if (UfoBtn) {
+        UfoBtn.addEventListener('click', function () {
+          window.open('https://bangorinas-play.github.io/ufo-run', '_blank', 'noopener');
+        });
+      }
+
+      if (dinoBtn) {
+        dinoBtn.addEventListener('click', function () {
+          showDino();
+        });
+      }
+
+      if (dinoCloseBtn) {
+        dinoCloseBtn.addEventListener('click', function () {
+          showArcade();
+        });
+      }
+
+      if (musicproductionBtn) {
+        musicproductionBtn.addEventListener('click', function () {
+          window.location.href = 'https://musicprod.bangorinas.com';
+        });
+      }
+
+
+      if (QrisBar) {
+        QrisBar.addEventListener('click', function () {
+          showQris();
+        });
+      }
+
+      if (QrisCloseBtn) {
+        QrisCloseBtn.addEventListener('click', function () {
+          showPaypal();
         });
       }
 
       if (ExpandArrow) {
         ExpandArrow.addEventListener('click', function () {
-          showMicro();
+          showWelcome();
         });
       }
+
 
 
     })();
